@@ -1,0 +1,26 @@
+{
+  "name": "3350-ta-course-matching",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattt-liu/3350-TA-Course-Matching.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mattt-liu/3350-TA-Course-Matching/issues"
+  },
+  "homepage": "https://github.com/mattt-liu/3350-TA-Course-Matching#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "joi": "^17.3.0",
+    "json": "^10.0.0",
+    "node": "^15.7.0"
+  }
+}
