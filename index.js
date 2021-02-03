@@ -11,7 +11,6 @@ app.use(express.json());
 app.use('/', express.static('static'));
 app.use(cors());
 
-
 // ######## logs ########
 	app.use((req, res, next) => {
 	    console.log(`${req.method} request for ${req.url}`);
