@@ -5,8 +5,8 @@ const cors = require('cors');
 const express = require("express");
 const Joi = require("joi");
 const MongoClient = require('mongodb').MongoClient;
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+// const bcrypt = require('bcrypt');
+// const jwt = require('jsonwebtoken');
 
 const app = express();
 const router = express.Router();
@@ -41,6 +41,28 @@ client.connect(err => {
 	// get all courses
 		.get((req, res) => {
 			res.status(200).send("Hello world");
+		})
+
+
+	router.route('/courses-ml')
+		.post((req, res) => {
+
+			// sanitize body with schema
+		        const schema = Joi.object({
+		            course: Joi.string().trim().required(),
+		            questions: Joi.array().items(Joi.string()).required()
+		        });
+		        const result = schema.validate(req.body);
+
+				if (result.error) return res.status(400).send(result.error); //.error.details[0].message)
+
+				return mongoClient.connect().then(() => {
+
+					mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(req.body);
+
+					return res.status(200).send(req.body);
+
+				})
 		})
 
 app.use('/api', router);
