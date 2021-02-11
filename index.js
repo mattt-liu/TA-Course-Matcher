@@ -5,8 +5,8 @@ const cors = require('cors');
 const express = require("express");
 const Joi = require("joi");
 const MongoClient = require('mongodb').MongoClient;
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+//const bcrypt = require('bcrypt');
+//const jwt = require('jsonwebtoken');
 
 const app = express();
 const router = express.Router();
@@ -42,6 +42,27 @@ client.connect(err => {
 		.get((req, res) => {
 			res.status(200).send("Hello world");
 		})
+
+		router.route('/coursehours')
+		// get all courses
+			.get((req, res) => {
+				
+				let hours = 5;
+				let prevHours = 10;
+				let prevEnrol = 2;
+				let enrol = 5;
+
+				function calcHours() {
+
+					hours = (prevHours/prevEnrol)*enrol;
+				}
+				
+				return hours;
+
+				res.status(200).send("Hello world");
+			})
+		
+	
 
 app.use('/api', router);
 
