@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -7,6 +7,10 @@ import { HttpClient } from '@angular/common/http';
 export class QuestionsService {
 
   url = "localhost:3000"; // http://localhost:4200/questions
+
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
 
   constructor(private http: HttpClient) { }
 

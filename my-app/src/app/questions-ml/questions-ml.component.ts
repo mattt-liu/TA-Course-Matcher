@@ -20,9 +20,9 @@ export class QuestionsMlComponent implements OnInit {
     let course = (document.getElementById(`course-name`) as HTMLInputElement).value;
 
     let questions = [];
-    for (let i = 0; i < 5; i ++) {
-      let q = (document.getElementById(`question-${i+1}`) as HTMLInputElement).value;
-      if (q === "" ) continue; // skip if input is empty
+    for (let i = 0; i < 5; i++) {
+      let q = (document.getElementById(`question-${i + 1}`) as HTMLInputElement).value;
+      if (q === "") continue; // skip if input is empty
       questions.push(q);
     }
 
@@ -33,12 +33,20 @@ export class QuestionsMlComponent implements OnInit {
       course: course,
       questions: questions
     }
-    console.log("sending request");
 
-    this.questions.createQuestions(data);
+    this.questions.createQuestions(data).subscribe(data => {
+    });
+
+    setTimeout(this.clear, 500);
   }
 
-  cancel() {
+  clear() {
+    // get input values
+    (document.getElementById(`course-name`) as HTMLInputElement).value = "";
 
+    for (let i = 0; i < 5; i++) {
+      (document.getElementById(`question-${i + 1}`) as HTMLInputElement).value = "";
+    }
   }
+
 }
