@@ -1,7 +1,6 @@
 {
   "name": "3350-ta-course-matching",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,9 +20,10 @@
     "dotenv": "^8.2.0",
     "env": "0.0.2",
     "express": "^4.17.1",
-    "joi": "^17.3.0",
+    "joi": "^17.4.0",
     "json": "^10.0.0",
     "mongodb": "^3.6.4",
-    "node": "^15.7.0"
-  }
+    "node": "^15.8.0"
+  },
+  "description": ""
 }
