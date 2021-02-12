@@ -39,23 +39,19 @@ router.route('/test')
 		res.status(200).send("Hello world");
 	})
 
-
 router.route('/getcourses')
 	.get((req, res) => {
-
-
-
 		return mongoClient.connect().then(() => {
 
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
-          
+		  
 			// return promise that checks if that course exists
 			return new Promise((resolve, reject) => {
-                let courses = [];
+				let courses = [];
 				collection.forEach(e => {
 					if (e.requires) {
-                        courses.push(e)
-           			}
+						courses.push(e)
+					}
 				},
 					() => {
 						collection.close();
@@ -64,12 +60,8 @@ router.route('/getcourses')
 			})
 				.then((result) => {
 					// if course exists
-
-					
 					return res.status(200).send(result)
-				})
-				
-
+				})	
 		})
 	})
 
