@@ -1,15 +1,19 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ConfigService } from './require-tapositions/require-tapositions.component';
-import { AppComponent } from './app.component';
 import { RequireTAPositionsComponent } from './require-tapositions/require-tapositions.component';
-import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+import { QuestionsMlComponent } from './questions-ml/questions-ml.component';
+import { AppRoutingModule } from './app-routing.module';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     RequireTAPositionsComponent
+    QuestionsMlComponent
   ],
   imports: [
     BrowserModule,

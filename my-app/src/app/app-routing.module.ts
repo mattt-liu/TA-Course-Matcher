@@ -1,15 +1,16 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+
+import { RouterModule, Routes } from '@angular/router';
+import { QuestionsMlComponent } from './questions-ml/questions-ml.component';
 import { RequireTAPositionsComponent } from './require-tapositions/require-tapositions.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '', pathMatch: 'full'},
-  { path: 'RequireTAPositionsComponent', component: RequireTAPositionsComponent},
-
-];
+  { path: 'questions', component: QuestionsMlComponent },
+  { path: 'RequireTAPositionsComponent', component: RequireTAPositionsComponent}
+]
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
