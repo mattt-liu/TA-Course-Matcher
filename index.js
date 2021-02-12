@@ -20,13 +20,11 @@ const uri = "mongodb+srv://node:" + process.env.DB_PASSWORD_SECRET + "@uwo-se.0z
 const mongoClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 /* sample code
-
 client.connect(err => {
   const collection = client.db("test").collection("devices");
   // perform actions on the collection object
   client.close();
 });
-
 */
 
 // ######## logs ########
@@ -42,6 +40,30 @@ router.route('/test')
 	// get all courses
 	.get((req, res) => {
 		res.status(200).send("Hello world");
+	})
+
+router.route('/getcourses')
+	.get((req, res) => {
+		return mongoClient.connect().then(() => {
+
+			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
+		  
+			// return promise that checks if that course exists
+			return new Promise((resolve, reject) => {
+				let courses = [];
+				collection.forEach(e => {
+					if (e.requires) {
+						courses.push(e)
+					}
+				},
+					() => {
+						collection.close();
+						resolve(courses);
+					});
+			})
+				.then((result) => {
+					return res.status(200).send(result)
+				})
 	});
 
 router.route('/coursehours')
@@ -128,15 +150,14 @@ router.route('/courses-ml')
 				collection.forEach(e => {
 					if (e.course.toLowerCase() === req.body.course.toLowerCase()) {
 						resolve(e);
-					}
-				},
+          },
 					() => {
 						collection.close();
 						reject();
 					});
 			})
 				.then((result) => {
-					// if course exists
+          // if course exists
 
 					let newCourse = result;
 
@@ -154,7 +175,6 @@ router.route('/courses-ml')
 
 					return res.status(200).send(req.body);
 				});
-
 		})
 	})
 
