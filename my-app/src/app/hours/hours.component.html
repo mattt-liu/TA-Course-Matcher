@@ -1,0 +1,19 @@
+<title>Allocate Hours</title>
+<h1>Allocate Hours</h1>
+<div>
+    <label>Course: </label>
+    <input placeholder="Enter a course" id="course-name">
+    <div>
+        <input placeholder="Enter previous enrollments" id="prevEnrol">
+    </div>
+    <div>
+        <input placeholder="Enter previous TA hours" id="prevHours">
+    </div>
+    <div>
+        <input placeholder="Enter current enrollments" id="enrol">
+    </div>
+</div>
+<div>
+    <button (click)="sendHours()">Save</button>
+    <button (click)="clear()">Cancel</button>
+</div>
