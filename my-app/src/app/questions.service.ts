@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from './../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuestionsService {
-
-  url = "localhost:3000"; // http://localhost:4200/questions
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -15,10 +14,7 @@ export class QuestionsService {
   constructor(private http: HttpClient) { }
 
   createQuestions(data) {
-    return this.http.post(`http://localhost:3000/api/courses-ml`, data);
-  }
-
-  test() {
-    return this.http.get("localhost:3000/api/test");
+    if (environment.production) return this.http.post(`/api/courses-ml`, data);
+    return this.http.post(`${environment.apiUrl}/api/courses-ml`, data);
   }
 }

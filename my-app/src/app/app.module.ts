@@ -7,13 +7,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { QuestionsMlComponent } from './questions-ml/questions-ml.component';
 import { AppRoutingModule } from './app-routing.module';
+import { HoursComponent } from './hours/hours.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    RequireTAPositionsComponent
-    QuestionsMlComponent
+    RequireTAPositionsComponent,
+    QuestionsMlComponent,
+    HoursComponent
   ],
   imports: [
     BrowserModule,

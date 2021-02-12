@@ -19,8 +19,6 @@ return this.http.get<courses[]>(this.linkstring);
    
 }
 
-
-
 @Component({
   selector: 'app-require-tapositions',
   templateUrl: './require-tapositions.component.html',
@@ -53,8 +51,6 @@ export class RequireTAPositionsComponent implements OnInit {
       this.needsPositions.push(this.courses[key].course)
     
     }
-
-    console.log(this.needsPositions)
   }
 
 

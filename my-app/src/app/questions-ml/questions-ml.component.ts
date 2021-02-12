@@ -41,7 +41,6 @@ export class QuestionsMlComponent implements OnInit {
   }
 
   clear() {
-    // get input values
     (document.getElementById(`course-name`) as HTMLInputElement).value = "";
 
     for (let i = 0; i < 5; i++) {
