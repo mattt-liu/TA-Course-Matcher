@@ -11,6 +11,7 @@ import { QuestionsMlComponent } from './questions-ml/questions-ml.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HoursComponent } from './hours/hours.component';
 import { InstructorComponentComponent } from './instructor-component/instructor-component.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { InstructorComponentComponent } from './instructor-component/instructor-
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    MatTableModule
+    MatTableModule,
+    BrowserAnimationsModule
   ],
   providers: [
     ConfigService,
