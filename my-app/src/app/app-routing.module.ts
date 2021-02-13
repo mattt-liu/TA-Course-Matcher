@@ -8,7 +8,7 @@ import { HoursComponent } from './hours/hours.component';
 const routes: Routes = [
   { path: 'questions', component: QuestionsMlComponent },
   { path: 'RequireTAPositionsComponent', component: RequireTAPositionsComponent},
-  { path: 'hours', component: HoursComponent}
+  { path: 'hours', component: HoursComponent},
 ]
 
 @NgModule({

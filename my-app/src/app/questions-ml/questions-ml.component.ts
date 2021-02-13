@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { QuestionsService } from '../questions.service'
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { InstructorComponentComponent } from '../instructor-component/instructor-component.component';
 
 @Component({
   selector: 'app-questions-ml',

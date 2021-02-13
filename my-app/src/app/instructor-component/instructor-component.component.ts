@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {MatTableModule} from '@angular/material/table';
 import { qualificationsService } from './qualifications.service';
 
 // angular material table stuff (test)
