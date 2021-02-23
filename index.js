@@ -175,6 +175,22 @@ app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 // getting all courses 
 
+router.route('/applicant-rankings')
+	.get((req, res) => {
+
+	})
+	.post((req, res) => {
+
+	})
+
+router.route('/instructor-rankings')
+	.get((req, res) => {
+
+	})
+	.post((req, res) => {
+		
+	})
+
 // req.body format = { course: "some-course", qualifications: "some text here" }
 router.route('/courses-insert-qualifications')
 	.post((req, res) => {
