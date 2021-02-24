@@ -185,7 +185,31 @@ router.route('/applicant-rankings')
 
 router.route('/instructor-rankings')
 	.get((req, res) => {
+		// ...rankings?course=se123
+		return mongoClient.connect().then(() => {
 
+			if (!req.query.course) return res.status(400).send("No params");
+			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("instructor-rankings").find();
+
+			return new Promise((resolve, reject) => {
+
+				collection.forEach(e => {
+					if (e.course.toLowerCase() === req.query.course.toLowerCase()) {
+						resolve(e);
+					}
+				},
+					() => {
+						collection.close();
+						reject();
+					});
+			})
+				.then((result) => {
+					return res.status(200).send(result);
+				})
+				.catch(() => {
+					return res.status(404).send("Course not found");
+				});
+		})
 	})
 	.post((req, res) => {
 		
