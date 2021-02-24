@@ -212,7 +212,53 @@ router.route('/instructor-rankings')
 		})
 	})
 	.post((req, res) => {
-		
+		// TODO: matt - change to posting rankings
+		// sanitize body with schema
+		const schema = Joi.object({
+			course: Joi.string().trim().required(),
+			questions: Joi.array().items(Joi.string()).required()
+		});
+		const result = schema.validate(req.body);
+
+		if (result.error) return res.status(400).send(result.error); //.error.details[0].message)
+
+		return mongoClient.connect().then(() => {
+
+			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
+
+			// return promise that checks if that course exists
+			return new Promise((resolve, reject) => {
+
+				collection.forEach(e => {
+					if (e.course.toLowerCase() === req.body.course.toLowerCase()) {
+						resolve(e);
+					}
+				},
+					() => {
+						collection.close();
+						reject();
+					});
+			})
+				.then((result) => {
+					// if course exists
+
+					let newCourse = result;
+
+					newCourse.questions = req.body.questions;
+
+					return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").deleteOne({ _id: result._id }).then(() => {
+						return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(newCourse).then(() => {
+							return res.status(200).send(req.body);
+						});
+					});
+				})
+				.catch(() => {
+					// if course NOT exist
+					mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(req.body);
+
+					return res.status(200).send(req.body);
+				});
+		})
 	})
 
 // req.body format = { course: "some-course", qualifications: "some text here" }
