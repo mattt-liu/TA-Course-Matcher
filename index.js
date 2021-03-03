@@ -173,28 +173,133 @@ app.use('/api', router);
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
-// getting all courses 
+router.route('/assign')
+	.post((req, res) => {
+		// TODO: matt - change to posting rankings
+		// sanitize body with schema
 
-router.route('/applicant-rankings')
+		const schema = Joi.object({
+			course: Joi.string().trim().required(),
+			name: Joi.string().trim().required()
+		});
+		const result = schema.validate(req.body);
+		if (result.error) return res.status(400).send(result.error);
+
+		return mongoClient.connect().then(() => {
+
+			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("assigned-applicants").find();
+
+			// check course is not assigned
+			return new Promise((resolve, reject) => {
+
+				collection.forEach(e => {
+					if (e.course.toLowerCase() === req.body.course.toLowerCase()) {
+						reject();
+					}
+				},
+					() => {
+						collection.close();
+						resolve();
+					});
+			})
+				.then(() => {
+					// assign course
+
+					let newCourse = result;
+
+					newCourse.questions = req.body.questions;
+
+					return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").deleteOne({ _id: result._id }).then(() => {
+						return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(newCourse).then(() => {
+							return res.status(200).send(req.body);
+						});
+					});
+				})
+				.catch(() => {
+					// course has been assigned already
+					return res.status(400).send("Course/applicant is already assigned");
+				});
+		})
+	})
+
+router.route('/applicant-rankings/:name')
 	.get((req, res) => {
 
+		return mongoClient.connect().then(() => {
+
+			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("applicant-rankings").find();
+
+			return new Promise((resolve, reject) => {
+
+				collection.forEach(e => {
+					if (e.name.toLowerCase() === req.params.name.toLowerCase()) {
+						resolve(e);
+					}
+				},
+					() => {
+						collection.close();
+						reject();
+					});
+			})
+				.then(result => {
+
+					function checkAssigned(courses) {
+						// check if applicant is already assigned
+						let assignees = mongoClient.db("SE3350-TA-Course-Matching").collection("assigned-applicants").find();
+						let assigned = [];
+						return new Promise((resolve, reject) => {
+							assignees.forEach(e => {
+								for (let course of courses) {
+									if (e.course.toLowerCase() === course.toLowerCase()) {
+										assigned.push(true);
+									}
+									else assigned.push(false);
+								}
+							},
+								() => {
+									collection.close();
+									resolve(assigned);
+								});
+						});
+					}
+
+					return checkAssigned(result.appliedCourses).then(assigned => {
+
+						let applicants = [];
+						for (let i = 0; i < result.appliedCourses.length; i++) {
+
+							let a = {
+								name: result.appliedCourses[i],
+								assigned: assigned[i]
+							}
+
+							applicants.push(a);
+						}
+						return res.status(200).send(JSON.stringify(applicants));
+
+					})
+				})
+				.catch(err => {
+					console.log(err)
+					return res.status(404).send("Course not found");
+				});
+		})
 	})
 	.post((req, res) => {
 
 	})
 
-router.route('/instructor-rankings')
+router.route('/instructor-rankings/:course')
 	.get((req, res) => {
-		// ...rankings?course=se123
+
 		return mongoClient.connect().then(() => {
 
-			if (!req.query.course) return res.status(400).send("No params");
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("instructor-rankings").find();
 
 			return new Promise((resolve, reject) => {
 
 				collection.forEach(e => {
-					if (e.course.toLowerCase() === req.query.course.toLowerCase()) {
+					if (e.course.toLowerCase() === req.params.course.toLowerCase()) {
 						resolve(e);
 					}
 				},
@@ -204,7 +309,43 @@ router.route('/instructor-rankings')
 					});
 			})
 				.then((result) => {
-					return res.status(200).send(result);
+
+					function checkAssigned(names) {
+						// check if applicant is already assigned
+						let assignees = mongoClient.db("SE3350-TA-Course-Matching").collection("assigned-applicants").find();
+						let assigned = [];
+						return new Promise((resolve, reject) => {
+							assignees.forEach(e => {
+								for (let name of names) {
+									if (e.name.toLowerCase() === name.toLowerCase()) {
+										assigned.push(true);
+									}
+									else assigned.push(false);
+								}
+							},
+								() => {
+									collection.close();
+									resolve(assigned);
+								});
+						});
+					}
+
+
+					return checkAssigned(result.rankings).then(assigned => {
+
+						let applicants = [];
+						for (let i = 0; i < result.rankings.length; i++) {
+
+							let a = {
+								name: result.rankings[i],
+								assigned: assigned[i]
+							}
+
+							applicants.push(a);
+						}
+						return res.status(200).send(JSON.stringify(applicants));
+
+					})
 				})
 				.catch(() => {
 					return res.status(404).send("Course not found");
@@ -214,12 +355,12 @@ router.route('/instructor-rankings')
 	.post((req, res) => {
 		// TODO: matt - change to posting rankings
 		// sanitize body with schema
+
 		const schema = Joi.object({
 			course: Joi.string().trim().required(),
 			questions: Joi.array().items(Joi.string()).required()
 		});
 		const result = schema.validate(req.body);
-
 		if (result.error) return res.status(400).send(result.error); //.error.details[0].message)
 
 		return mongoClient.connect().then(() => {
