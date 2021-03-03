@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HoursComponent } from './hours/hours.component';
 import { InstructorComponentComponent } from './instructor-component/instructor-component.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CourseInfoAndQuestionsComponent } from './course-info-and-questions/course-info-and-questions.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     RequireTAPositionsComponent,
     QuestionsMlComponent,
     HoursComponent,
-    InstructorComponentComponent
+    InstructorComponentComponent,
+    CourseInfoAndQuestionsComponent
   ],
   imports: [
     BrowserModule,

@@ -226,3 +226,28 @@ router.route('/courses-insert-qualifications')
 				});
 		})
 	});
+
+	router.route('/getquestions')
+	.get((req, res) => {
+		return mongoClient.connect().then(() => {
+
+			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
+
+			// return promise that checks if that course exists
+			return new Promise((resolve, reject) => {
+				let courses = [];
+				collection.forEach(e => {
+					if (e.questions) {
+						courses.push(e)
+					}
+				},
+					() => {
+						collection.close();
+						resolve(courses);
+					});
+			})
+				.then((result) => {
+					return res.status(200).send(result)
+				})
+		})
+	});

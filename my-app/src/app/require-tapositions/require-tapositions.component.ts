@@ -3,18 +3,25 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { courses } from './needsTAs';
+import { questions } from '../course-info-and-questions/questions';
 
 
 @Injectable()
 export class ConfigService {
 
 private linkstring: string = "http://localhost:3000/api/getcourses";
+private linkstring1: string = "http://localhost:3000/api/getquestions";
+
 
 constructor(private http: HttpClient) { }
    
   
 getcourses(): Observable<courses[]> {
 return this.http.get<courses[]>(this.linkstring);
+    }
+
+getquestions(): Observable<questions[]> {
+return this.http.get<questions[]>(this.linkstring1);
     }
    
 }
