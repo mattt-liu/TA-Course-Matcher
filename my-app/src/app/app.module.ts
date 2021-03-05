@@ -11,6 +11,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { HoursComponent } from './hours/hours.component';
 import { InstructorComponentComponent } from './instructor-component/instructor-component.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TAApplyAndRankComponent } from './ta-apply-and-rank/ta-apply-and-rank.component';
+import { DepartmentTASelectionComponent } from './department-ta-selection/department-ta-selection.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     RequireTAPositionsComponent,
     QuestionsMlComponent,
     HoursComponent,
-    InstructorComponentComponent
+    InstructorComponentComponent,
+    TAApplyAndRankComponent,
+    DepartmentTASelectionComponent
   ],
   imports: [
     BrowserModule,

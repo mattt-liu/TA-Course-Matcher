@@ -1,0 +1,25 @@
+.outerTable {
+    /*border: 1px solid black;*/
+    border-spacing: 0;
+    width: 60%;
+}
+
+.innerTableDiv{
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+
+}
+
+.subTables{
+    width: 100%;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+td {
+    border: 1px solid black;
+    border-spacing: 0;  
+    width: 
+}

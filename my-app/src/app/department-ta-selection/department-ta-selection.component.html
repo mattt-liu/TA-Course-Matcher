@@ -1,0 +1,81 @@
+<p>department-ta-selection works!</p>
+
+<table class="outerTable"> 
+    <tr>
+        <td>
+            <div class="innerTableDiv">
+                <!-- table displaying a list of courses the ECE members can select one from to view the rankings and assign a TA-->
+                <h2>Course List</h2>
+                <table>
+                    <tr>
+                        <td>Course Code</td>
+                        <td>TA Hours Required.</td> 
+                        <!--<td> TAs Assigned? </td>-->
+                        <td>TA required</td>
+                    </tr>
+
+                    <!-- looping through courses data and rendering row for each course -->
+                    <tr *ngFor="let course of courseData" (click)="courseSelected(course.course)">
+                        <td> {{ course.course }} </td>
+                        <td> {{ course.hours }} </td>
+                        <td> {{ course.required }} </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+        <td>
+            <div class="innerTableDiv">
+                <h2>{{ this.selectedCourse }} TA Selection</h2>
+
+                <!-- Sub tables displaing the professor and TA rankings for each course-->
+                <table>
+                    <tr>
+                        <td>
+                            <h2><td>Professor {{ this.selectedCourseInstructor }} Rankings</td></h2>
+                            <table class="subTables">
+                                <tr *ngFor="let course of this.instructorRankings">
+                                    <td>TA Name</td>
+                                </tr> 
+                            
+                                <!-- instructor rankings table rows-->
+                                <tr *ngFor="let ta of this.instructorRankings">
+                                    <td> {{ ta }} </td>
+                                </tr>
+                            </table>
+                        </td>   
+                        <td>
+                            <h2>TA Rankings</h2>
+                            <table class="subTables">
+                                <tr>
+                                    <td>TA Name</td>
+                                    <td>Ranked this course</td>
+                                </tr>
+
+                                <!-- TA rankings table-->
+                                <tr *ngFor="let ta of this.TaRankings"> 
+                                    <td>
+                                        {{ ta.name }}
+                                    </td>
+                                    <td>
+                                        {{ ta.rankedThisCourse }}
+                                    </td>
+                                </tr> 
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- section below the two sub tables: select a TA for said course -->
+                    <tr>
+                        <td>
+                            <select id="taSelection">
+                                <option *ngFor="let applicant of this.instructorRankings">{{ applicant }}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <button (click)="taSelected()">Submit Selection</button>
+                    <!-- todo add buttons to select ta based on either professors or the TAs rankings? -->
+                </table>
+            </div>
+        </td>
+    </tr>
+</table>
