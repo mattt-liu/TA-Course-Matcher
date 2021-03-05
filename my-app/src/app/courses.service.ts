@@ -18,11 +18,31 @@ export class CoursesService {
     return this.http.get(`${environment.apiUrl}/api/getcourses`);
   }
 
-  getCourseInstructorRankings(courseCode){
-    return this.http.get(`${environment.apiUrl}/api/instructor-rankings/:course`);
+  assignApplicantRankings(name, body) {
+    /*
+    body = {
+			course: 
+			hours: 
+    }
+    */
+    return this.http.post(`${environment.apiUrl}/api/instructor-rankings/${name}`, body);
+  }
+  
+  assignInstructoryRankings(course, body) {
+    /*
+    body = {
+			name: 
+			hours: 
+    }
+    */
+    return this.http.post(`${environment.apiUrl}/api/instructor-rankings/${course}`, body);
   }
 
-  getCourseTARankings(courseCode){
-    return this.http.get(`${environment.apiUrl}/api/instructor-rankings/:course`);
+  getApplicantRankings(name){
+    return this.http.get(`${environment.apiUrl}/api/applicant-rankings/${name}`);
+  }
+
+  getInstructorRankings(course){
+    return this.http.get(`${environment.apiUrl}/api/instructor-rankings/${course}`);
   }
 }
