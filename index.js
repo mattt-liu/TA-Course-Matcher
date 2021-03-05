@@ -227,79 +227,196 @@ router.route('/assign')
 router.route('/applicant-rankings/:name')
 	.get((req, res) => {
 
+		let name = req.params.name.substr(0, 1).toUpperCase() + req.params.name.substr(1).toLowerCase(); // format name
+
 		return mongoClient.connect().then(() => {
-
-			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("applicant-rankings").find();
-
-			return new Promise((resolve, reject) => {
-
-				collection.forEach(e => {
-					if (e.name.toLowerCase() === req.params.name.toLowerCase()) {
-						resolve(e);
-					}
-				},
-					() => {
-						collection.close();
-						reject();
+			// get applicant's rankings
+			return mongoClient.db(dbName).collection("applicant-rankings").findOne({ name }).then(appRankings => {
+				if (!appRankings) return res.status(400).send("Not a valid applicant!")
+				// check applicant has hours left (i.e. total = 10 hours, assigned = 5 hours)
+				let appHours = mongoClient.db(dbName).collection("assigned").find({ name });
+				return new Promise((resolve, reject) => {
+					let hoursAssigned = 0;
+					appHours.forEach(e => {
+						hoursAssigned += e.hours;
+					}, () => {
+						appHours.close();
+						let totalHours = appRankings.hours;
+						if (hoursAssigned >= totalHours) reject();
+						else resolve(hoursAssigned);
 					});
-			})
-				.then(result => {
-
-					function checkAssigned(courses) {
-						// check if applicant is already assigned
-						let assignees = mongoClient.db("SE3350-TA-Course-Matching").collection("assigned-applicants").find();
-						let assigned = [];
-						return new Promise((resolve, reject) => {
-							assignees.forEach(e => {
-								for (let course of courses) {
-									if (e.course.toLowerCase() === course.toLowerCase()) {
-										assigned.push(true);
-									}
-									else assigned.push(false);
-								}
-							},
-								() => {
-									collection.close();
-									resolve(assigned);
-								});
-						});
+				}).then(appHoursAssigned => {
+					// get courses' total hours
+					let promises = [];
+					for (let i = 0; i < appRankings.appliedCourses.length; i++) {
+						let p = mongoClient.db(dbName).collection("courses").findOne({ course: appRankings.appliedCourses[i].toUpperCase() });
+						promises.push(p);
 					}
+					return Promise.all(promises).then(courseTotHours => {
+						// get courses' assigned hours 
+						let promises2 = [];
+						for (let i = 0; i < appRankings.appliedCourses.length; i++) {
+							let name = appRankings.appliedCourses[i];
+							let p = mongoClient.db(dbName).collection("assigned").find({ course: appRankings.appliedCourses[i].toUpperCase() });
+							promises2.push(p);
+						}
+						return Promise.all(promises2).then(courseHours => {
+							// determine if applicants have hours remaining to be assigned
 
-					return checkAssigned(result.appliedCourses).then(assigned => {
-
-						let applicants = [];
-						for (let i = 0; i < result.appliedCourses.length; i++) {
-
-							let a = {
-								name: result.appliedCourses[i],
-								assigned: assigned[i]
+							let courseHoursLeft = []
+							for (let i = 0; i < courseTotHours.length; i++) {
+								let p = new Promise((resolve, reject) => {
+									if (courseHours[i]) {
+										let hoursAlreadyUsed = 0;
+										courseHours[i].forEach(e => {
+											hoursAlreadyUsed += e.hours;
+										}, () => {
+											let hoursLeft = courseTotHours[i].hours - hoursAlreadyUsed;
+											let applicant = {
+												course: appRankings.appliedCourses[i],
+												hoursLeft: hoursLeft
+											}
+											resolve(applicant);
+										})
+									}
+									else {
+										let hoursLeft = courseTotHours[i].hours;
+										let applicant = {
+											course: appRankings.rankings[i],
+											hoursLeft: hoursLeft
+										}
+										resolve(applicant);
+									}
+								})
+								courseHoursLeft.push(p);
 							}
 
-							applicants.push(a);
-						}
-						return res.status(200).send(JSON.stringify(applicants));
-
+							return Promise.all(courseHoursLeft).then(courseHoursLeft => {
+								return res.status(200).send(courseHoursLeft);
+							})
+						})
 					})
-				})
-				.catch(err => {
-					console.log(err)
-					return res.status(404).send("Course not found");
-				});
+				}).catch(() => res.status(400).send("Applicant fully assigned!"));
+			})
 		})
 	})
 	.post((req, res) => {
+		const schema = Joi.object({
+			course: Joi.string().trim().max(64).required(),
+			hours: Joi.number().integer().min(0).required()
+		});
+		const result = schema.validate(req.body);
+		if (result.error) return res.status(400).send(result.error);
 
+		let name = req.params.name.substr(0, 1).toUpperCase() + req.params.name.substr(1).toLowerCase(); // format name
+
+		return mongoClient.connect().then(() => {
+			// get applicant's rankings
+			return mongoClient.db(dbName).collection("applicant-rankings").findOne({ name }).then(appRankings => {
+				// check applicant has hours left (i.e. total = 10 hours, assigned = 5 hours)
+				let appHours = mongoClient.db(dbName).collection("assigned").find({ name });
+				return new Promise((resolve, reject) => {
+					let hoursAssigned = 0;
+					appHours.forEach(e => {
+						hoursAssigned += e.hours;
+					}, () => {
+						appHours.close();
+						let totalHours = appRankings.hours;
+						if (hoursAssigned >= totalHours) reject();
+						else resolve(hoursAssigned);
+					});
+				}).then(appHoursAssigned => {
+					// get courses' total hours
+					let promises = [];
+					for (let i = 0; i < appRankings.appliedCourses.length; i++) {
+						let p = mongoClient.db(dbName).collection("courses").findOne({ course: appRankings.appliedCourses[i].toUpperCase() });
+						promises.push(p);
+					}
+					return Promise.all(promises).then(courseTotHours => {
+						// get courses' assigned hours 
+						let promises2 = [];
+						for (let i = 0; i < appRankings.appliedCourses.length; i++) {
+							let name = appRankings.appliedCourses[i];
+							let p = mongoClient.db(dbName).collection("assigned").find({ course: appRankings.appliedCourses[i].toUpperCase() });
+							promises2.push(p);
+						}
+						return Promise.all(promises2).then(courseHours => {
+							// determine if applicants have hours remaining to be assigned
+
+							let courseHoursLeft = []
+							for (let i = 0; i < courseTotHours.length; i++) {
+								let p = new Promise((resolve, reject) => {
+									if (courseHours[i]) {
+										let hoursAlreadyUsed = 0;
+										courseHours[i].forEach(e => {
+											hoursAlreadyUsed += e.hours;
+										}, () => {
+											let hoursLeft = courseTotHours[i].hours - hoursAlreadyUsed;
+											let applicant = {
+												course: appRankings.appliedCourses[i],
+												hoursLeft: hoursLeft
+											}
+											resolve(applicant);
+										})
+									}
+									else {
+										let hoursLeft = courseTotHours[i].hours;
+										let applicant = {
+											course: appRankings.rankings[i],
+											hoursLeft: hoursLeft
+										}
+										resolve(applicant);
+									}
+								})
+								courseHoursLeft.push(p);
+							}
+
+							return Promise.all(courseHoursLeft).then(courseHoursLeft => {
+									let assignedCourse = courseHoursLeft.find(e => e.course.toLowerCase() === req.body.course.toLowerCase());
+	
+									if (!assignedCourse) return res.status(404).send("Course not found!");
+									if (assignedCourse.hoursLeft == 0) return res.status(400).send("Course already assigned!");
+									if (req.body.hours > assignedCourse.hoursLeft) return res.status(400).send("Course insufficient hours!");
+	
+									return mongoClient.db(dbName).collection("assigned").findOne({ name: name, course: assignedCourse.course.toUpperCase() }).then(checkAssigned => {
+	
+										// insert if it does not exist
+										if (!checkAssigned) {
+											let newAssignee = req.body;
+											newAssignee.name = name;
+											return mongoClient.db(dbName).collection("assigned").insertOne(newAssignee).then(() => {
+												return res.status(200).send(newAssignee);
+											});
+										}
+										// update if it does exist
+										else {
+											let newAssignee = req.body;
+											newAssignee.name = name;
+											newAssignee.hours += checkAssigned.hours;
+											return mongoClient.db(dbName).collection("assigned").deleteOne({ _id: checkAssigned._id }).then(() => {
+												return mongoClient.db(dbName).collection("assigned").insertOne(newAssignee).then(() => {
+													return res.status(200).send(newAssignee);
+												});
+											});
+										}
+									})
+							})
+						})
+					})
+				})//.catch(() => res.status(400).send("Applicant fully assigned!"));
+			})
+		})
 	})
 
 router.route('/instructor-rankings/:course')
 	.get((req, res) => {
-		// TODO: redo to encorporate hours calculation
 
 		let course = req.params.course.toUpperCase();
 
 		return mongoClient.connect().then(() => {
 			// get instructor rankings
 			return mongoClient.db(dbName).collection("instructor-rankings").findOne({ course }).then(instRankings => {
+				if (!instRankings) return res.status(404).send("Course not found");
 				// get course's hours
 				return mongoClient.db(dbName).collection("courses").findOne({ course }).then(courseObject => {
 					// check course is not fully assigned (i.e. total = 10 hours, assigned = 5 hours)
@@ -318,7 +435,7 @@ router.route('/instructor-rankings/:course')
 						// get applicants' assigned hours
 						let promises = [];
 						for (let i = 0; i < instRankings.rankings.length; i++) {
-							let p = mongoClient.db(dbName).collection("assigned").findOne({ name: instRankings.rankings[i] });
+							let p = mongoClient.db(dbName).collection("assigned").find({ name: instRankings.rankings[i] });
 							promises.push(p);
 						}
 						return Promise.all(promises).then(appHours => {
@@ -334,40 +451,56 @@ router.route('/instructor-rankings/:course')
 
 								let appHoursLeft = []
 								for (let i = 0; i < appTotHours.length; i++) {
-									let hoursLeft = 0;
-									if (appHours[i]) {
-										hoursLeft = appTotHours[i].hours - appHours[i].hours;
-									}
-									else hoursLeft = appTotHours[i].hours;
-									let applicant = {
-										name: instRankings.rankings[i],
-										hoursLeft: hoursLeft
-									}
-									appHoursLeft.push(applicant);
+									let p = new Promise((resolve, reject) => {
+										if (appHours[i]) {
+											let hoursAlreadyUsed = 0;
+											appHours[i].forEach(e => {
+												hoursAlreadyUsed += e.hours;
+											}, () => {
+												let hoursLeft = appTotHours[i].hours - hoursAlreadyUsed;
+												let applicant = {
+													name: instRankings.rankings[i],
+													hoursLeft: hoursLeft
+												}
+												resolve(applicant);
+											})
+										}
+										else {
+											let hoursLeft = appTotHours[i].hours;
+											let applicant = {
+												name: instRankings.rankings[i],
+												hoursLeft: hoursLeft
+											}
+											resolve(applicant);
+										}
+									})
+									appHoursLeft.push(p);
 								}
-								return res.status(200).send(appHoursLeft);
+								return Promise.all(appHoursLeft).then(hoursLeft => {
+									return res.status(200).send(hoursLeft);
+								})
 							})
 						})
 					})
+					.catch(() => res.status(400).send("Course is fully assigned!"));
 				})
 			})
 		})
 	})
 	.post((req, res) => {
-		// TODO: matt - change to posting rankings
-		// sanitize body with schema
-
 		const schema = Joi.object({
 			name: Joi.string().trim().max(64).required(),
 			hours: Joi.number().integer().min(0).required()
 		});
 		const result = schema.validate(req.body);
 		if (result.error) return res.status(400).send(result.error);
-
+		
 		let course = req.params.course.toUpperCase();
+
 		return mongoClient.connect().then(() => {
 			// get instructor rankings
 			return mongoClient.db(dbName).collection("instructor-rankings").findOne({ course }).then(instRankings => {
+				if (!instRankings) return res.status(404).send("Course not found");
 				// get course's hours
 				return mongoClient.db(dbName).collection("courses").findOne({ course }).then(courseObject => {
 					// check course is not fully assigned (i.e. total = 10 hours, assigned = 5 hours)
@@ -386,7 +519,7 @@ router.route('/instructor-rankings/:course')
 						// get applicants' assigned hours
 						let promises = [];
 						for (let i = 0; i < instRankings.rankings.length; i++) {
-							let p = mongoClient.db(dbName).collection("assigned").findOne({ name: instRankings.rankings[i] });
+							let p = mongoClient.db(dbName).collection("assigned").find({ name: instRankings.rankings[i] });
 							promises.push(p);
 						}
 						return Promise.all(promises).then(appHours => {
@@ -402,49 +535,65 @@ router.route('/instructor-rankings/:course')
 
 								let appHoursLeft = []
 								for (let i = 0; i < appTotHours.length; i++) {
-									let hoursLeft = 0;
-									if (appHours[i]) {
-										hoursLeft = appTotHours[i].hours - appHours[i].hours;
-									}
-									else hoursLeft = appTotHours[i].hours;
-									let applicant = {
-										name: instRankings.rankings[i],
-										hoursLeft: hoursLeft
-									}
-									appHoursLeft.push(applicant);
+									let p = new Promise((resolve, reject) => {
+										if (appHours[i]) {
+											let hoursAlreadyUsed = 0;
+											appHours[i].forEach(e => {
+												hoursAlreadyUsed += e.hours;
+											}, () => {
+												let hoursLeft = appTotHours[i].hours - hoursAlreadyUsed;
+												let applicant = {
+													name: instRankings.rankings[i],
+													hoursLeft: hoursLeft
+												}
+												resolve(applicant);
+											})
+										}
+										else {
+											let hoursLeft = appTotHours[i].hours;
+											let applicant = {
+												name: instRankings.rankings[i],
+												hoursLeft: hoursLeft
+											}
+											resolve(applicant);
+										}
+									})
+									appHoursLeft.push(p);
 								}
-
-								let assignedApp = appHoursLeft.find(e => e.name.toLowerCase() === req.body.name.toLowerCase());
-
-								if (!assignedApp) return res.status(404).send("Applicant not found!");
-								if (assignedApp.hoursLeft == 0) return res.status(400).send("Applicant already assigned!");
-								if (req.body.hours > assignedApp.hoursLeft) return res.status(400).send("Applicant insufficient hours!");
-
-								return mongoClient.db(dbName).collection("assigned").findOne({name: assignedApp.name, course: course}).then(checkAssigned => {
-
-									// insert if it does not exist
-									if (!checkAssigned) {
-										let newAssignee = req.body;
-										newAssignee.course = course;
-										return mongoClient.db(dbName).collection("assigned").insertOne(newAssignee).then(() => {
-											return res.status(200).send(newAssignee);
-										});
-									}
-									// update if it does exist
-									else {
-										let newAssignee = req.body;
-										newAssignee.course = course;
-										newAssignee.hours += assignedApp.hoursLeft;
-										return mongoClient.db(dbName).collection("assigned").deleteOne({ _id: checkAssigned._id }).then(() => {
+								return Promise.all(appHoursLeft).then(appHoursLeft => {
+									let assignedApp = appHoursLeft.find(e => e.name.toLowerCase() === req.body.name.toLowerCase());
+	
+									if (!assignedApp) return res.status(404).send("Applicant not found!");
+									if (assignedApp.hoursLeft == 0) return res.status(400).send("Applicant already assigned!");
+									if (req.body.hours > assignedApp.hoursLeft) return res.status(400).send("Applicant insufficient hours!");
+	
+									return mongoClient.db(dbName).collection("assigned").findOne({ name: assignedApp.name, course: course }).then(checkAssigned => {
+	
+										// insert if it does not exist
+										if (!checkAssigned) {
+											let newAssignee = req.body;
+											newAssignee.course = course;
 											return mongoClient.db(dbName).collection("assigned").insertOne(newAssignee).then(() => {
 												return res.status(200).send(newAssignee);
 											});
-										});
-									}
+										}
+										// update if it does exist
+										else {
+											let newAssignee = req.body;
+											newAssignee.course = course;
+											newAssignee.hours += checkAssigned.hours;
+											return mongoClient.db(dbName).collection("assigned").deleteOne({ _id: checkAssigned._id }).then(() => {
+												return mongoClient.db(dbName).collection("assigned").insertOne(newAssignee).then(() => {
+													return res.status(200).send(newAssignee);
+												});
+											});
+										}
+									})
 								})
 							})
 						})
 					})
+					.catch(() => res.status(400).send("Course is fully assigned!"));
 				})
 			})
 		})
