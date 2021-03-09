@@ -1,6 +1,34 @@
+<link rel = "stylesheet" href="hours.component.css"/>
 <title>Allocate Hours</title>
 <h1>Allocate Hours</h1>
-<div>
+<style type= "text/css">
+    body{
+        padding: 0;
+        margin: 0;
+        background: indigo;
+        
+    }
+    h1{
+        padding: 0;
+        margin: 0;
+        text-align: center;
+        color:#fff;
+        background: indigo;
+
+    }
+    p{
+        text-align: center;
+        color: #fff;
+    }
+    .input{
+        text-align: center;
+        color:#fff;
+    }
+    .buttons{
+        text-align: center;
+    }
+</style>
+<div class = 'input'>
     <label>Course: </label>
     <input placeholder="Enter a course" id="course-name">
     <div>
@@ -13,7 +41,8 @@
         <input placeholder="Enter current enrollments" id="enrol">
     </div>
 </div>
-<div>
+<div class = 'buttons'>
     <button (click)="sendHours()">Save</button>
     <button (click)="clear()">Cancel</button>
 </div>
+<p>&copy; Blue Cheese 2021</p>
