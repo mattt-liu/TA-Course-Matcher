@@ -1,7 +1,32 @@
 <app-instructor-component></app-instructor-component>
 <title>Create Questions</title>
 <h1>TA Questions</h1>
-<div>
+<style type = 'text/css'>
+    body{
+        padding: 0;
+        margin: 0;
+        background: indigo;
+    }
+    h1{
+        padding: 0;
+        margin: 0;
+        text-align: center;
+        color: #fff;
+        background: indigo;
+    }
+    .input{
+    color: white;
+    text-align: center;
+    }
+    .buttons{
+        text-align: center;
+    }
+    p{
+        color: white;
+        text-align: center;
+    }
+</style>
+<div class = 'input'>
     <label>Course: </label>
     <input placeholder="Enter a course" id="course-name">
     <div>
@@ -20,7 +45,8 @@
         <input placeholder="Enter a question" id="question-5">
     </div>
 </div>
-<div>
+<div class = 'buttons'>
     <button (click)="sendQuestions()">Save</button>
     <button (click)="clear()">Cancel</button>
 </div>
+<p>&copy; Blue Cheese 2021</p>
