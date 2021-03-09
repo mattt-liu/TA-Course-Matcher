@@ -25,7 +25,7 @@ export class CoursesService {
 			hours: 
     }
     */
-    return this.http.post(`${environment.apiUrl}/api/instructor-rankings/${name}`, body);
+    return this.http.post(`${environment.apiUrl}/api/applicant-rankings/${name}`, body);
   }
   
   assignInstructoryRankings(course, body) {

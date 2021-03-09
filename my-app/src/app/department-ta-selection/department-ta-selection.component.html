@@ -1,66 +1,72 @@
-<p>department-ta-selection works!</p>
-
-<table class="outerTable"> 
+<table class="tableNoBorder"> 
     <tr>
-        <td>
+        <td class="leftInnerTableTd">
             <div class="innerTableDiv">
                 <!-- table displaying a list of courses the ECE members can select one from to view the rankings and assign a TA-->
                 <h2>Course List</h2>
                 <table>
                     <tr>
-                        <td>Course Code</td>
-                        <td>TA Hours Required.</td> 
+                        <td class="tdWithBorder">Course Code</td>
+                        <td class="tdWithBorder">TA Hours Required.</td> 
                         <!--<td> TAs Assigned? </td>-->
-                        <td>TA required</td>
+                        <td class="tdWithBorder">TA required</td>
                     </tr>
 
                     <!-- looping through courses data and rendering row for each course -->
                     <tr *ngFor="let course of courseData" (click)="courseSelected(course.course)">
-                        <td> {{ course.course }} </td>
-                        <td> {{ course.hours }} </td>
-                        <td> {{ course.required }} </td>
+                        <td class="tdWithBorder"> {{ course.course }} </td>
+                        <td class="tdWithBorder"> {{ course.hours }} </td>
+                        <td class="tdWithBorder"> {{ course.requires }} </td>
                     </tr>
                 </table>
             </div>
         </td>
-        <td>
+        <td class="rightInnerTableTd">
             <div class="innerTableDiv">
                 <h2>{{ this.selectedCourse }} TA Selection</h2>
 
                 <!-- Sub tables displaing the professor and TA rankings for each course-->
                 <table>
                     <tr>
-                        <td>
+                        <td style="width:100%; margin-left: 10px; margin-right: 10px;">
                             <h2><td>Professor {{ this.selectedCourseInstructor }} Rankings</td></h2>
                             <table class="subTables">
-                                <tr *ngFor="let course of this.instructorRankings">
-                                    <td>TA Name</td>
-                                </tr> 
-                            
-                                <!-- instructor rankings table rows-->
-                                <tr *ngFor="let ta of this.instructorRankings">
-                                    <td> {{ ta }} </td>
-                                </tr>
-                            </table>
-                        </td>   
-                        <td>
-                            <h2>TA Rankings</h2>
-                            <table class="subTables">
-                                <tr>
-                                    <td>TA Name</td>
-                                    <td>Ranked this course</td>
-                                </tr>
+                                <ng-container *ngIf="showInstructorTable">
+                                    <tr>
+                                        <td class="tdWithBorder">TA Name</td>
+                                        <td class="tdWithBorder">Hours Left</td>
+                                    </tr>
 
-                                <!-- TA rankings table-->
-                                <tr *ngFor="let ta of this.TaRankings"> 
-                                    <td>
-                                        {{ ta.name }}
-                                    </td>
-                                    <td>
-                                        {{ ta.rankedThisCourse }}
-                                    </td>
-                                </tr> 
+                                    <tr *ngFor="let ta of this.instructorRankings" (click)="this.taSelected(ta.name)">
+                                        <td>{{ ta.name }}</td>
+                                        <td>{{ ta.hoursLeft }}</td>
+                                    </tr>
+                                </ng-container>
                             </table>
+                        </td>  
+                        <td style="width:10%;">
+
+                        </td> 
+                        <td style="width:80%; margin-left: 20px; margin-right: 10px;">
+                            <ng-container *ngIf="taRowSelected">
+                                <h2>{{ this.selectedTaName }}'s Rankings</h2>
+                                <table class="subTables">
+                                    <tr>
+                                        <td class="tdWithBorder">Course</td>
+                                        <td class="tdWithBorder">Rank</td>
+                                    </tr>
+
+                                    <!-- TA rankings table-->
+                                    <tr *ngFor="let course of this.taRankings; let i = index"> 
+                                        <td class="tdWithBorder">
+                                            {{ course.course }}
+                                        </td>
+                                        <td class="tdWithBorder">
+                                            {{ i+1 }}
+                                        </td>
+                                    </tr> 
+                                </table>
+                            </ng-container>
                         </td>
                     </tr>
 
@@ -68,11 +74,15 @@
                     <tr>
                         <td>
                             <select id="taSelection">
-                                <option *ngFor="let applicant of this.instructorRankings">{{ applicant }}</option>
+                                <option *ngFor="let applicant of this.instructorRankings">{{ applicant.name }}</option>
                             </select>
                         </td>
                     </tr>
-                    <button (click)="taSelected()">Submit Selection</button>
+
+                    Number of hours to assign
+                    <input type="text" id="taAssignmentHours">
+                    <br/>
+                    <button (click)="assignTA()">Submit Selection</button>
                     <!-- todo add buttons to select ta based on either professors or the TAs rankings? -->
                 </table>
             </div>
