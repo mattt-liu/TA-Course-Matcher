@@ -13,6 +13,7 @@ import { InstructorComponentComponent } from './instructor-component/instructor-
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TAApplyAndRankComponent } from './ta-apply-and-rank/ta-apply-and-rank.component';
 import { DepartmentTASelectionComponent } from './department-ta-selection/department-ta-selection.component';
+import { CourseInfoAndQuestionsComponent } from './course-info-and-questions/course-info-and-questions.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { DepartmentTASelectionComponent } from './department-ta-selection/depart
     HoursComponent,
     InstructorComponentComponent,
     TAApplyAndRankComponent,
-    DepartmentTASelectionComponent
+    DepartmentTASelectionComponent,
+    CourseInfoAndQuestionsComponent
   ],
   imports: [
     BrowserModule,

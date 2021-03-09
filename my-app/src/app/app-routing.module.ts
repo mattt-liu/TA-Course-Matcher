@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-
+import { CourseInfoAndQuestionsComponent } from './course-info-and-questions/course-info-and-questions.component'
 import { RouterModule, Routes } from '@angular/router';
 import { QuestionsMlComponent } from './questions-ml/questions-ml.component';
 import { RequireTAPositionsComponent } from './require-tapositions/require-tapositions.component';
@@ -12,7 +12,8 @@ const routes: Routes = [
   { path: 'RequireTAPositionsComponent', component: RequireTAPositionsComponent},
   { path: 'hours', component: HoursComponent},
   { path: 'ta-apply-and-rank', component: TAApplyAndRankComponent },
-  { path: 'ece-ta-selection', component: DepartmentTASelectionComponent }
+  { path: 'ece-ta-selection', component: DepartmentTASelectionComponent },
+  { path: 'Info', component: CourseInfoAndQuestionsComponent}
 ]
 
 @NgModule({

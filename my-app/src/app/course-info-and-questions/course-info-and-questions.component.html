@@ -1,0 +1,27 @@
+
+<p class ="bold">Select the course you would like to be sent the course information and qualifying questions for:</p>
+
+<select id = "dropdown">
+<option></option>
+<option *ngFor="let obj of courses">{{obj.course}}</option>
+</select>
+
+<button (click)= "showInformation()">Click here to show information of a course</button>
+
+<div>
+    <table class = "Searchresults" *ngFor = "let i of infoArray"> 
+      <tr> 
+        <th>Course:</th>
+        <th>Qualifications:</th>
+        <th>Open TA positions:</th>
+        <th>Screening Questions:</th>
+  
+      </tr>
+      <tr> 
+        <td>{{i.course}}</td>
+        <td>{{i.qualifications}}</td>
+        <td>{{i.requires}}</td>
+        <td>{{i.questions}}</td>
+      </tr>
+    </table>
+</div>
