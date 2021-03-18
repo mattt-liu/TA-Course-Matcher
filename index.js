@@ -122,6 +122,7 @@ router.route('/coursehours')
 
 router.route('/courses-ml')
 	.post((req, res) => {
+		// course questions
 
 		// sanitize body with schema
 		const schema = Joi.object({
@@ -169,6 +170,24 @@ router.route('/courses-ml')
 					return res.status(200).send(req.body);
 				});
 		})
+	})
+
+router.route('/add-applicants')
+	.post((req, res) => {
+		// applicant answers in csv file
+		const schema = Joi.array().items(Joi.object({
+			course: Joi.string().min(4).required(),
+			name: Joi.string().required(),
+			email: Joi.string().required(),
+			status: Joi.number().required(),
+			hours: Joi.number().required(),
+			ranking: Joi.number().required(),
+			answers: Joi.array().items(Joi.string().required()).required()
+		})).required();
+		const result = schema.validate(req.body);
+		if (result.error) return res.status(400).send(result.error);
+
+		res.status(200).send(req.body);
 	})
 
 app.use('/api', router);
@@ -372,34 +391,34 @@ router.route('/applicant-rankings/:name')
 							}
 
 							return Promise.all(courseHoursLeft).then(courseHoursLeft => {
-									let assignedCourse = courseHoursLeft.find(e => e.course.toLowerCase() === req.body.course.toLowerCase());
-	
-									if (!assignedCourse) return res.status(404).send("Course not found!");
-									if (assignedCourse.hoursLeft == 0) return res.status(400).send("Course already assigned!");
-									if (req.body.hours > assignedCourse.hoursLeft) return res.status(400).send("Course insufficient hours!");
-	
-									return mongoClient.db(dbName).collection("assigned").findOne({ name: name, course: assignedCourse.course.toUpperCase() }).then(checkAssigned => {
-	
-										// insert if it does not exist
-										if (!checkAssigned) {
-											let newAssignee = req.body;
-											newAssignee.name = name;
+								let assignedCourse = courseHoursLeft.find(e => e.course.toLowerCase() === req.body.course.toLowerCase());
+
+								if (!assignedCourse) return res.status(404).send("Course not found!");
+								if (assignedCourse.hoursLeft == 0) return res.status(400).send("Course already assigned!");
+								if (req.body.hours > assignedCourse.hoursLeft) return res.status(400).send("Course insufficient hours!");
+
+								return mongoClient.db(dbName).collection("assigned").findOne({ name: name, course: assignedCourse.course.toUpperCase() }).then(checkAssigned => {
+
+									// insert if it does not exist
+									if (!checkAssigned) {
+										let newAssignee = req.body;
+										newAssignee.name = name;
+										return mongoClient.db(dbName).collection("assigned").insertOne(newAssignee).then(() => {
+											return res.status(200).send(newAssignee);
+										});
+									}
+									// update if it does exist
+									else {
+										let newAssignee = req.body;
+										newAssignee.name = name;
+										newAssignee.hours += checkAssigned.hours;
+										return mongoClient.db(dbName).collection("assigned").deleteOne({ _id: checkAssigned._id }).then(() => {
 											return mongoClient.db(dbName).collection("assigned").insertOne(newAssignee).then(() => {
 												return res.status(200).send(newAssignee);
 											});
-										}
-										// update if it does exist
-										else {
-											let newAssignee = req.body;
-											newAssignee.name = name;
-											newAssignee.hours += checkAssigned.hours;
-											return mongoClient.db(dbName).collection("assigned").deleteOne({ _id: checkAssigned._id }).then(() => {
-												return mongoClient.db(dbName).collection("assigned").insertOne(newAssignee).then(() => {
-													return res.status(200).send(newAssignee);
-												});
-											});
-										}
-									})
+										});
+									}
+								})
 							})
 						})
 					})
@@ -482,7 +501,7 @@ router.route('/instructor-rankings/:course')
 							})
 						})
 					})
-					.catch(() => res.status(400).send("Course is fully assigned!"));
+						.catch(() => res.status(400).send("Course is fully assigned!"));
 				})
 			})
 		})
@@ -494,7 +513,7 @@ router.route('/instructor-rankings/:course')
 		});
 		const result = schema.validate(req.body);
 		if (result.error) return res.status(400).send(result.error);
-		
+
 		let course = req.params.course.toUpperCase();
 
 		return mongoClient.connect().then(() => {
@@ -562,13 +581,13 @@ router.route('/instructor-rankings/:course')
 								}
 								return Promise.all(appHoursLeft).then(appHoursLeft => {
 									let assignedApp = appHoursLeft.find(e => e.name.toLowerCase() === req.body.name.toLowerCase());
-	
+
 									if (!assignedApp) return res.status(404).send("Applicant not found!");
 									if (assignedApp.hoursLeft == 0) return res.status(400).send("Applicant already assigned!");
 									if (req.body.hours > assignedApp.hoursLeft) return res.status(400).send("Applicant insufficient hours!");
-	
+
 									return mongoClient.db(dbName).collection("assigned").findOne({ name: assignedApp.name, course: course }).then(checkAssigned => {
-	
+
 										// insert if it does not exist
 										if (!checkAssigned) {
 											let newAssignee = req.body;
@@ -593,7 +612,7 @@ router.route('/instructor-rankings/:course')
 							})
 						})
 					})
-					.catch(() => res.status(400).send("Course is fully assigned!"));
+						.catch(() => res.status(400).send("Course is fully assigned!"));
 				})
 			})
 		})
@@ -651,7 +670,7 @@ router.route('/courses-insert-qualifications')
 		})
 	});
 
-	router.route('/getquestions')
+router.route('/getquestions')
 	.get((req, res) => {
 		return mongoClient.connect().then(() => {
 
