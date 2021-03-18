@@ -13,7 +13,7 @@ export class UploadApplicantService {
 
   constructor(private http: HttpClient) { }
 
-  addApplicant() {
-    
+  addApplicant(data) {
+    return this.http.post(`${environment.apiUrl}/api/add-applicants`, data);
   }
 }
