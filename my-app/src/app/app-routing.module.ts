@@ -6,6 +6,7 @@ import { RequireTAPositionsComponent } from './require-tapositions/require-tapos
 import { HoursComponent } from './hours/hours.component';
 import { TAApplyAndRankComponent } from './ta-apply-and-rank/ta-apply-and-rank.component';
 import { DepartmentTASelectionComponent } from './department-ta-selection/department-ta-selection.component';
+import { UploadApplicantComponent } from './upload-applicant/upload-applicant.component';
 
 const routes: Routes = [
   { path: 'questions', component: QuestionsMlComponent },
