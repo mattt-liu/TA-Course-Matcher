@@ -98,8 +98,9 @@ export class UploadApplicantComponent implements OnInit {
 		}
 
 		// send questions
-		for (let q of formatted) {
-			this.qService.createQuestions(q).subscribe();
+		for (let i = 0; i < formatted.length; i ++) {
+			let q = formatted[i];
+			setTimeout(() => this.qService.createQuestions(q).subscribe(), i * 200);
 		}
 	}
 }
