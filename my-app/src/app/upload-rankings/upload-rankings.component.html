@@ -1,1 +1,6 @@
-<p>upload-rankings works!</p>
+<h1>Upload Rankings</h1>
+<input type="file" #fileImportInput name="File Upload" id="csvFileUpload" (change)="fileListener($event)"
+    accept=".csv" />
+<div *ngIf="csvError" style="color: red;">
+    <p>Wrong file format!</p>
+</div>
