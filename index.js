@@ -174,7 +174,7 @@ router.route('/courses-ml')
 
 router.route('/add-applicants')
 	.post((req, res) => {
-		// applicant answers in csv file
+		// add applicant answers 
 		const schema = Joi.array().items(Joi.object({
 			course: Joi.string().min(4).required(),
 			name: Joi.string().required(),
@@ -186,6 +186,71 @@ router.route('/add-applicants')
 		})).required();
 		const result = schema.validate(req.body);
 		if (result.error) return res.status(400).send(result.error);
+
+		mongoClient.connect().then(() => {
+			// combine apps into array of apps
+			let combinedApps = [];
+			for (let row of req.body) {
+				let newApp = {
+					name: row.name,
+					email: row.email,
+					hours: row.hours,
+					status: row.status,
+					answers: [],
+					appliedCourses: []
+				}
+				// get index of existing applicnat
+				let index = undefined;
+				for (let j = 0; j < combinedApps.length; j++) {
+					// console.log(combinedApps[j].name, row.name, combinedApps[j].name === row.name);
+					if (combinedApps[j].name === row.name) {
+						index = j;
+						break;
+					}
+				}
+				// applicant does not exist
+				if (index === undefined) {
+					newApp.appliedCourses[row.ranking - 1] = row.course;
+					newApp.answers[row.ranking - 1] = row.answers;
+					combinedApps.push(newApp);
+				}
+				// applicant exists
+				else {
+					let app = combinedApps[index];
+					newApp.appliedCourses = app.appliedCourses;
+					newApp.answers = app.answers;
+					newApp.hours = app.hours;
+
+					newApp.appliedCourses[row.ranking - 1] = row.course;
+					newApp.answers[row.ranking - 1] = row.answers;
+					newApp.hours += row.hours;
+
+					combinedApps[index] = newApp;
+				}
+			}
+
+			// find and replace
+			let promises = [];
+			for (let app of combinedApps) {
+				promises.push(mongoClient.db(dbName).collection("applicant-rankings").findOne({ name: app.name }));
+			}
+
+			Promise.all(promises).then(applicants => {
+				for (let i = 0; i < applicants.length; i++) {
+					// applicant does not exist
+					if (!applicants[i]) {
+						mongoClient.db(dbName).collection("applicant-rankings").insertOne(combinedApps[i]);
+					}
+					// applicant exists
+					else {
+						mongoClient.db(dbName).collection("applicant-rankings").deleteOne({ _id: applicants[i]._id }).then(() => {
+							mongoClient.db(dbName).collection("applicant-rankings").insertOne(combinedApps[i]);
+						});
+					}
+				}
+			});
+			res.status(200).send();
+		})
 
 		res.status(200).send(req.body);
 	})
