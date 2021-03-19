@@ -16,6 +16,7 @@ import { TAApplyAndRankComponent } from './ta-apply-and-rank/ta-apply-and-rank.c
 import { DepartmentTASelectionComponent } from './department-ta-selection/department-ta-selection.component';
 import { CourseInfoAndQuestionsComponent } from './course-info-and-questions/course-info-and-questions.component';
 import { UploadApplicantComponent } from './upload-applicant/upload-applicant.component';
+import { UploadRankingsComponent } from './upload-rankings/upload-rankings.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { UploadApplicantComponent } from './upload-applicant/upload-applicant.co
     TAApplyAndRankComponent,
     DepartmentTASelectionComponent,
     CourseInfoAndQuestionsComponent,
-    UploadApplicantComponent
+    UploadApplicantComponent,
+    UploadRankingsComponent
   ],
   imports: [
     BrowserModule,
