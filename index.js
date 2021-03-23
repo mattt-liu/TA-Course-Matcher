@@ -460,7 +460,8 @@ router.route('/instructor-rankings/:course')
 												let hoursLeft = appTotHours[i].hours - hoursAlreadyUsed;
 												let applicant = {
 													name: instRankings.rankings[i],
-													hoursLeft: hoursLeft
+													hoursLeft: hoursLeft,
+													status: appTotHours[i].status,
 												}
 												resolve(applicant);
 											})
@@ -469,7 +470,8 @@ router.route('/instructor-rankings/:course')
 											let hoursLeft = appTotHours[i].hours;
 											let applicant = {
 												name: instRankings.rankings[i],
-												hoursLeft: hoursLeft
+												hoursLeft: hoursLeft,
+												status: appTotHours[i].status,
 											}
 											resolve(applicant);
 										}
