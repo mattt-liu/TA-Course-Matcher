@@ -14,8 +14,7 @@ private linkstring1: string = "http://localhost:3000/api/getquestions";
 private linkstring2: string = "http://localhost:3000/api/getapplicants";
 
 constructor(private http: HttpClient) { }
-   
-  
+
 getcourses(): Observable<courses[]> {
 return this.http.get<courses[]>(this.linkstring);
     }
@@ -23,12 +22,10 @@ return this.http.get<courses[]>(this.linkstring);
 getquestions(): Observable<questions[]> {
 return this.http.get<questions[]>(this.linkstring1);
     }
-  
 getapplicants(): Observable<applicant[]> {
 return this.http.get<applicant[]>(this.linkstring2);
     }
 
-   
 }
 
 @Component({

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { NgxCsvParserModule } from 'ngx-csv-parser';
 
 import { ConfigService } from './require-tapositions/require-tapositions.component';
 import { RequireTAPositionsComponent } from './require-tapositions/require-tapositions.component';
@@ -13,6 +14,10 @@ import { InstructorComponentComponent } from './instructor-component/instructor-
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CourseInfoAndQuestionsComponent } from './course-info-and-questions/course-info-and-questions.component';
 import { ApplicantInformationComponent } from './applicant-information/applicant-information.component';
+import { TAApplyAndRankComponent } from './ta-apply-and-rank/ta-apply-and-rank.component';
+import { DepartmentTASelectionComponent } from './department-ta-selection/department-ta-selection.component';
+import { UploadApplicantComponent } from './upload-applicant/upload-applicant.component';
+import { UploadRankingsComponent } from './upload-rankings/upload-rankings.component';
 
 @NgModule({
   declarations: [
@@ -21,14 +26,19 @@ import { ApplicantInformationComponent } from './applicant-information/applicant
     QuestionsMlComponent,
     HoursComponent,
     InstructorComponentComponent,
-    CourseInfoAndQuestionsComponent,
     ApplicantInformationComponent
+    TAApplyAndRankComponent,
+    DepartmentTASelectionComponent,
+    CourseInfoAndQuestionsComponent,
+    UploadApplicantComponent,
+    UploadRankingsComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NgxCsvParserModule
   ],
   providers: [
     ConfigService,

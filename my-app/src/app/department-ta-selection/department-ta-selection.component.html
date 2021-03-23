@@ -1,0 +1,120 @@
+<h1 style="color: indigo; font-weight: 800;">TA Selection Component</h1>
+<table class="tableNoBorder"> 
+    <tr style="text-align: top; margin-top: 5px; height: 10%;">
+        <td class="leftInnerTableTd">
+            <div class="innerTableDiv">
+                <!-- table displaying a list of courses the ECE members can select one from to view the rankings and assign a TA-->
+                <h2>Course List</h2>
+                <table class="subTables">
+                    <tr>
+                        <td class="tdWithBorder">Course Code</td>
+                        <td class="tdWithBorder">TA Hours Required.</td> 
+                        <!--<td> TAs Assigned? </td>-->
+                        <td class="tdWithBorder">TA required</td>
+                    </tr>
+
+                    <!-- looping through courses data and rendering row for each course -->
+                    <tr *ngFor="let course of courseData" (click)="courseSelected(course.course)">
+                        <td class="tdWithBorder"> {{ course.course }} </td>
+                        <td class="tdWithBorder"> {{ course.hours }} </td>
+                        <td class="tdWithBorder"> {{ course.requires }} </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+        <td class="rightInnerTableTd">
+            <div class="innerTableDiv">
+                <h2>{{ this.selectedCourse }} TA Selection</h2>
+
+                <!-- Sub tables displaing the professor and TA rankings for each course-->
+                <table>
+                    <tr style="width: 70%;">
+                        <td style=" height: 20%; width:70%; margin-left: 10px; margin-right: 10px;">
+                            <h2><td>Professor {{ this.selectedCourseInstructor }} Rankings</td></h2>
+                            <table class="subTables">
+                                <ng-container *ngIf="showInstructorTable">
+                                    <tr>
+                                        <td class="tdWithBorder">TA Name</td>
+                                        <td class="tdWithBorder">Hours Left</td>
+                                    </tr>
+
+                                    <tr *ngFor="let ta of this.instructorRankings" (click)="this.taSelected(ta.name)">
+                                        <td class="tdWithBorder">{{ ta.name }}</td>
+                                        <td class="tdWithBorder">{{ ta.hoursLeft }}</td>
+                                        <td style="white-space: nowrap; overflow: visible;" *ngIf="ta.name == this.selectedTaName"> <h1>→</h1> </td>
+                                    </tr>
+                                </ng-container>
+                            </table>
+                        </td>  
+                        <td style="height: 20%; width:30%;">
+
+                        </td> 
+                        <td style="width:80%; margin-left: 20px; margin-right: 10px;">
+                            <ng-container *ngIf="taRowSelected">
+                                <h2>{{ this.selectedTaName }}'s Rankings</h2>
+                                <table class="subTables">
+                                    <tr>
+                                        <td class="tdWithBorder">Course</td>
+                                        <td class="tdWithBorder">Rank</td>
+                                    </tr>
+
+                                    <!-- TA rankings table-->
+                                    <tr *ngFor="let course of this.taRankings; let i = index"> 
+                                        <td class="tdWithBorder">
+                                            {{ course.course }}
+                                        </td>
+                                        <td class="tdWithBorder">
+                                            {{ i+1 }}
+                                        </td>
+                                    </tr> 
+                                </table>
+                            </ng-container>
+                        </td>
+                    </tr>
+
+                    <!-- section below the two sub tables: select a TA for said course -->
+                    <tr>
+                        <td style="column-span: 2;">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <h2>Suggested Applicant for {{ this.selectedCourse }}: {{ this.bestApplicant }}</h2>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 10%;">
+                                        <button (click)="assignSuggestedApplicant()">Choose this applicant</button>
+                                    </td>
+                                    <td style="width: 5%; text-align: center;"><h2>OR</h2></td>
+                                       
+                                    <td style="height: 10%; width: 20%;">
+                                        <button (click)="alternativeApplicant = !alternativeApplicant">Enter alternative applicant</button>
+                                        <ng-container *ngIf="alternativeApplicant">
+                                            <select id="taSelection" [(ngModel)]="this.selectedApplicant">
+                                                <option *ngFor="let applicant of this.instructorRankings" [value]="applicant.name">{{ applicant.name }}</option>
+                                            </select>
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <ng-container *ngIf="applicantSelected">
+                        <ng-container *ngIf="!alternativeApplicant">
+                            Number of hours to assign {{ this.bestApplicant }}
+                        </ng-container>
+
+                        <ng-container *ngIf="alternativeApplicant">
+                            Number of hours to assign {{ this.selectedApplicant }}
+                        </ng-container>
+
+                        <input type="text" id="taAssignmentHours">
+                        <br/>
+                        <button (click)="assignTA()">Submit Selection</button>
+                    </ng-container>
+                </table>
+            </div>
+        </td>
+    </tr>
+</table>
