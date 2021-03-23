@@ -12,9 +12,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { HoursComponent } from './hours/hours.component';
 import { InstructorComponentComponent } from './instructor-component/instructor-component.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CourseInfoAndQuestionsComponent } from './course-info-and-questions/course-info-and-questions.component';
+import { ApplicantInformationComponent } from './applicant-information/applicant-information.component';
 import { TAApplyAndRankComponent } from './ta-apply-and-rank/ta-apply-and-rank.component';
 import { DepartmentTASelectionComponent } from './department-ta-selection/department-ta-selection.component';
-import { CourseInfoAndQuestionsComponent } from './course-info-and-questions/course-info-and-questions.component';
 import { UploadApplicantComponent } from './upload-applicant/upload-applicant.component';
 import { UploadRankingsComponent } from './upload-rankings/upload-rankings.component';
 
@@ -25,6 +26,7 @@ import { UploadRankingsComponent } from './upload-rankings/upload-rankings.compo
     QuestionsMlComponent,
     HoursComponent,
     InstructorComponentComponent,
+    ApplicantInformationComponent
     TAApplyAndRankComponent,
     DepartmentTASelectionComponent,
     CourseInfoAndQuestionsComponent,

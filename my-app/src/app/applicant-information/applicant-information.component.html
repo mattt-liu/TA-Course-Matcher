@@ -1,0 +1,30 @@
+
+<div *ngIf = "applicants.length != 0">
+    <button (click)= "display()">Click here to display the applicants for each course</button>
+</div>
+
+
+
+<div>
+    <table *ngIf = "filteredapplicants.length != 0"> 
+      <tr> 
+        <th>Name:</th>
+        <th></th>
+        <th>Email:</th>
+        <th></th>
+        <th>Course preference and questions:</th>
+        <th></th>
+        <th>Corresponding answers to questions:</th>
+  
+      </tr>
+      <tr *ngFor = "let i of filteredapplicants"> 
+        <td>{{i.name}}</td>
+        <td></td>
+        <td>{{i.email}}</td>
+        <td></td>
+        <td>{{i.appliedCourses}}</td>
+        <td></td>
+        <td>{{i.answers}}</td>
+      </tr>
+    </table>
+</div>
