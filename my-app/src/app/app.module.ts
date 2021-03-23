@@ -12,6 +12,7 @@ import { HoursComponent } from './hours/hours.component';
 import { InstructorComponentComponent } from './instructor-component/instructor-component.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CourseInfoAndQuestionsComponent } from './course-info-and-questions/course-info-and-questions.component';
+import { ApplicantInformationComponent } from './applicant-information/applicant-information.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { CourseInfoAndQuestionsComponent } from './course-info-and-questions/cou
     QuestionsMlComponent,
     HoursComponent,
     InstructorComponentComponent,
-    CourseInfoAndQuestionsComponent
+    CourseInfoAndQuestionsComponent,
+    ApplicantInformationComponent
   ],
   imports: [
     BrowserModule,

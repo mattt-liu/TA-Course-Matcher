@@ -251,3 +251,28 @@ router.route('/courses-insert-qualifications')
 				})
 		})
 	});
+
+	router.route('/getapplicants') //Get the applicants and their answers to each question
+	.get((req, res) => {
+		return mongoClient.connect().then(() => {
+
+			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("applicant-rankings").find();
+
+			// return promise that checks if that course exists
+			return new Promise((resolve, reject) => {
+				let applicants = [];
+				collection.forEach(e => {
+					if (true) {
+						applicants.push(e)
+					}
+				},
+					() => {
+						collection.close();
+						resolve(applicants);
+					});
+			})
+				.then((result) => {
+					return res.status(200).send(result)
+				})
+		})
+	});
