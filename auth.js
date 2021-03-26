@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const secret = "c5fbee81f66de269876ade1db24d7e9a"; /* testing purposes only */
+const adminSecret = "249c672b888f18e333763baceb40fa36"; /* testing purposes only */
 
 function authenticateToken(req, res, next) {
     /* when a token is sent in the header
@@ -16,7 +17,7 @@ function authenticateToken(req, res, next) {
     }
 
     // verify token
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
+    jwt.verify(token, secret, (err, payload) => {
 
         // if token is invalid
         if (err) return res.status(400).send("Bad token"); // TODO: redirect 
@@ -39,7 +40,7 @@ function authenticateAdminToken(req, res, next) {
     }
 
     // verify token
-    jwt.verify(token, process.env.ADMIN_TOKEN_SECRET, (err, payload) => {
+    jwt.verify(token, adminSecret, (err, payload) => {
 
         // if token is invalid
         if (err) return res.status(400).send("Bad token"); // TODO: redirect login
