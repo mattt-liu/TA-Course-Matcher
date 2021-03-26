@@ -6,6 +6,7 @@ const express = require("express");
 const Joi = require("joi");
 const MongoClient = require('mongodb').MongoClient;
 const { resolve } = require("path");
+const auth = require("./auth");
 
 const app = express();
 const router = express.Router();
@@ -254,6 +255,29 @@ router.route('/add-applicants')
 
 		res.status(200).send(req.body);
 	})
+
+router.route("/login")
+	.post((req, res) => {
+		let schema = Joi.object({
+			email: Joi.string().trim().email({ tlds: { allow: false } }).max(256).required(), // tlds default is true (verifies with IANA list)
+			password: Joi.string().required()
+		});
+		let result = schema.validate(req.body);
+		if (result.error) return res.status(400).json(result.error);
+
+		return mongoClient.connect().then(() => {
+			return mongoClient.db(dbName).collection("users").findOne({ name: app.name }).then(user => {
+				if (!user) return res.status(401).json({ message: "Email does not exist" });
+				if (req.body.password !== user.password) return res.status(401).json({ message: "Incorrect password" });
+
+				let token = auth.signToken({
+					email: user.email,
+					admin: user.admin
+				});
+				return res.status(200).json({ "accessToken": token });
+			});
+		}).catch(err => res.status(500).json(err));
+	});
 
 app.use('/api', router);
 
@@ -761,7 +785,7 @@ router.route('/getquestions')
 		})
 	});
 
-	router.route('/getapplicants') //Get the applicants and their answers to each question
+router.route('/getapplicants') //Get the applicants and their answers to each question
 	.get((req, res) => {
 		return mongoClient.connect().then(() => {
 
