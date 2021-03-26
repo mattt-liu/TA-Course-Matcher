@@ -4,14 +4,13 @@ import { Router } from '@angular/router';
 import { AppComponent } from '../app.component';
 
 import { UserService } from '../user.service';
-import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-log-in',
   templateUrl: './log-in.component.html',
   styleUrls: ['./log-in.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LogInComponent implements OnInit {
 
   userError: boolean = false;
   passwordError: boolean = false;
