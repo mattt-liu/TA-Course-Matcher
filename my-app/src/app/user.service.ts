@@ -17,14 +17,16 @@ export class UserService {
 
   login(username: string, password: string) {
 
-    let header = this.getAuthorizationHeader();
-
     let body = {
-      username: username,
+      email: username,
       password: password
     }
 
-    return this.http.post(`${this.url}/login`, body, {headers: header});
+    return this.http.post(`${this.url}/api/login`, body);
+  }
+
+  getEmail() {
+    return this.http.get(`${this.url}/api/login`, {headers: this.getAuthorizationHeader()});
   }
 
   getAuthorizationHeader() {
@@ -43,7 +45,7 @@ export class UserService {
     localStorage.setItem('token', token.accessToken);
   }
 
-  logout() {    
+  logout() {
     localStorage.removeItem('token');
   }
 }
