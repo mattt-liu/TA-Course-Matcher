@@ -12,8 +12,10 @@ import { UserService } from '../user.service';
 })
 export class LogInComponent implements OnInit {
 
+  message = undefined;
   userError: boolean = false;
   passwordError: boolean = false;
+  signup = false;
 
   test = ['bruh', 'bruh2'];
 
@@ -33,12 +35,18 @@ export class LogInComponent implements OnInit {
       data => {
         this.userService.setToken(data);
         this.passwordError = false;
+        this.message = undefined;
         setTimeout(() => window.location.reload(), 500)
       },
       err => {
-        if (err) this.passwordError = true;
+        if (err.error.message) this.message = err.error.message;
+        else if (err) this.passwordError = true;
       }
     );
+  }
+
+  clickSignup() {
+    this.signup = !this.signup;
   }
 
   ngOnInit(): void { }

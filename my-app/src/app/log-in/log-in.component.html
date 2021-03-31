@@ -1,5 +1,16 @@
-
-    E-mail: <input id="login-username" type="email" name="email" autocomplete="off" required />
-    Password: <input id="login-password" type="password" name="password" required (keyup.enter)=login() />
-    <button (click)=login()>Log In</button>
+<div style="text-align: center;">
+    <h2>Log In</h2>
+    <br>E-mail:
+    <br><input id="login-username" type="email" name="email" autocomplete="off" required />
+    <br>Password:
+    <br><input id="login-password" type="password" name="password" required (keyup.enter)=login() />
+    <br><button (click)=login()>Log In</button>
     <p *ngIf="passwordError" style="color: red;">Incorrect username or password!</p>
+    <p *ngIf="message" style="color: red;">{{message}}</p>
+    <div style="margin-top: 25px;">
+        <button *ngIf="!signup" (click)="clickSignup()">Sign Up</button>
+        <div *ngIf="signup">
+            <app-signup></app-signup>
+        </div>
+    </div>
+</div>
