@@ -1,0 +1,14 @@
+<div style="padding-top: 25px; text-align: center;">
+    <h2>Sign Up</h2>
+    <br>E-mail:
+    <br><input id="signup-username" type="email" name="email" autocomplete="off" required />
+    <br>Password:
+    <br><input id="signup-password" type="password" name="password" required />
+    <div *ngIf="error">
+        <p style="color: red;">Please enter a valid email!</p>
+    </div>
+    <div *ngIf="message">
+        <p style="color: red;">{{message}}</p>
+    </div>
+    <br><button (click)=signup()>Sign Up</button>
+</div>
