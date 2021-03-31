@@ -1,9 +1,9 @@
 <h2>Log In</h2>
 <form>
-    <br>E-mail: <input id="login-username" type="email" name="email" required />
+    <br>E-mail: <input id="login-username" type="email" name="email" autocomplete="off" required />
     <br>Password: <input id="login-password" type="password" name="password" required (keyup.enter)=login() />
 </form>
 <div *ngIf="passwordError">
-    <p>Incorrect username or password!</p>
+    <p style="color: red;">Incorrect username or password!</p>
 </div>
 <button (click)=login()>Log In</button>
