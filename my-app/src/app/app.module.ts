@@ -32,7 +32,8 @@ import { LogInComponent } from './log-in/log-in.component';
     DepartmentTASelectionComponent,
     CourseInfoAndQuestionsComponent,
     UploadApplicantComponent,
-    UploadRankingsComponent
+    UploadRankingsComponent,
+    LogInComponent
   ],
   imports: [
     BrowserModule,
