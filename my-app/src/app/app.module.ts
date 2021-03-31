@@ -19,6 +19,7 @@ import { DepartmentTASelectionComponent } from './department-ta-selection/depart
 import { UploadApplicantComponent } from './upload-applicant/upload-applicant.component';
 import { UploadRankingsComponent } from './upload-rankings/upload-rankings.component';
 import { LogInComponent } from './log-in/log-in.component';
+import { SignupComponent } from './signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { LogInComponent } from './log-in/log-in.component';
     CourseInfoAndQuestionsComponent,
     UploadApplicantComponent,
     UploadRankingsComponent,
-    LogInComponent
+    LogInComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,

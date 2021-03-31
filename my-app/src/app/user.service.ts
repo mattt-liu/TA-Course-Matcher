@@ -25,6 +25,14 @@ export class UserService {
     return this.http.post(`${this.url}/api/login`, body);
   }
 
+  signup(email, password) {
+    let body = {
+      email: email,
+      password: password
+    }
+    return this.http.post(`${this.url}/api/signup`, body);
+  }
+
   getEmail() {
     return this.http.get(`${this.url}/api/login`, {headers: this.getAuthorizationHeader()});
   }
