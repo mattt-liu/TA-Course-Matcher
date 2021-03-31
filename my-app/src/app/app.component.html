@@ -11,22 +11,36 @@
       <li><a routerLink="/applicants">Applicants page</a></li>
       <li><a routerLink="/ta-apply-and-rank">TA Applications Rankings</a></li>
       <li><a routerLink="/ece-ta-selection">ECE Department Member TA Selection</a></li>
-      <li *ngIf="!user">
-        <app-log-in></app-log-in>>
+      <li *ngIf="!user"><button (click)="login()">Log In</button>
       </li>
-      <li *ngIf="user"><button (click)="logout()">Log Out</button></li>
+      <li *ngIf="user"><button (click)="logout()">{{user.email}}<br>Log Out</button></li>
     </ul>
   </nav>
 </div>
-<router-outlet></router-outlet>
+<div *ngIf="!user && showlogin">
+  <app-log-in></app-log-in>
+</div>
+<div>
+  <router-outlet></router-outlet>
+</div>
 <div class='copy'>
   <p>&copy; Blue Cheese 2021</p>
 </div>
 <style type='text/css'>
-ul {
-  list-style: none;
+div {
+  padding-top: 25px;
+  padding-bottom: 25px;
+  margin-top: 25px;
 }
+  ul {
+    padding: 0;
+    width: 100%;
+    list-style: none;
+  }
+
   nav {
+    padding: 0;
+    width: 100%;
     position: relative;
     padding-top: 25px;
     margin: 0 auto;
@@ -39,7 +53,7 @@ ul {
     flex-direction: row;
   }
 
-  nav>ul>li>a {
+  nav>ul>li>a, button {
     background-color: gray;
     display: block;
     color: white;
@@ -48,7 +62,8 @@ ul {
     text-decoration: none;
   }
 
-  nav>ul>li>a:hover {
+  nav>ul>li>a:hover, button:hover {
+    cursor: pointer;
     background-color: blue;
   }
 

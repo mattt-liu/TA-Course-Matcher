@@ -9,6 +9,7 @@ import { UserService } from './user.service';
 export class AppComponent implements OnInit {
 
 	user = undefined;
+	showlogin: boolean = false;
 
 	constructor(
 		private userService: UserService,
@@ -19,17 +20,24 @@ export class AppComponent implements OnInit {
 	}
 
 	checkLogin() {
+		if (!localStorage.getItem('token')) return;
 		this.userService.getEmail().subscribe(data => {
+			this.showlogin = false;
 			this.user = data;
-		},
-			err => {
-				this.user = undefined;
-			});
+		}, err => {
+			this.user = undefined;
+			this.userService.logout();
+		});
+	}
+
+	login() {
+		this.showlogin = !this.showlogin;
 	}
 
 	logout() {
 		console.log("LOGOUT");
 		this.userService.logout();
 		this.user = undefined;
+		window.location.reload();
 	}
 }

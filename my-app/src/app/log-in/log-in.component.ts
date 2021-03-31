@@ -23,7 +23,7 @@ export class LogInComponent implements OnInit {
     private appComponent: AppComponent
   ) { }
 
-  login() {
+  login(): boolean {
     let username = (document.getElementById("login-username") as HTMLInputElement).value;
     let password = (document.getElementById("login-password") as HTMLInputElement).value;
 
@@ -33,16 +33,12 @@ export class LogInComponent implements OnInit {
       data => {
         this.userService.setToken(data);
         this.passwordError = false;
-        this.redirectHome();
+        setTimeout(() => window.location.reload(), 500)
       },
       err => {
         if (err) this.passwordError = true;
       }
     );
-  }
-
-  redirectHome() {
-    setTimeout(() => this.router.navigate(['/']), 1000);
   }
 
   ngOnInit(): void { }
