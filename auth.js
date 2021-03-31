@@ -57,7 +57,7 @@ function signToken(user) {
         // TODO: figure out what to sign on the token 
         email: user.email
     }
-    return jwt.sign(userSign, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" }); // TODO: create refresh token
+    return jwt.sign(userSign, secret, { expiresIn: "15m" }); // TODO: create refresh token
 }
 
 module.exports = {
