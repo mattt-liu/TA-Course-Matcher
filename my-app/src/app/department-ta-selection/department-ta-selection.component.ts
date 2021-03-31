@@ -56,7 +56,6 @@ export class DepartmentTASelectionComponent implements OnInit {
       // if(this.instructorRankings.length == 0){
       //   console.log("Error, rankings were not assigned; selected course did not match any course code in the 'instructor-rankings' db collection");
       // }
-
     }); 
 
     

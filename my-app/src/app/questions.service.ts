@@ -17,4 +17,8 @@ export class QuestionsService {
     if (environment.production) return this.http.post(`/api/courses-ml`, data);
     return this.http.post(`${environment.apiUrl}/api/courses-ml`, data);
   }
+
+  getQuestions(data){
+    return this.http.get(`${environment.apiUrl}/api/getquestions`, data);
+  }
 }
