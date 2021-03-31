@@ -1,6 +1,5 @@
-<h1>SE 3350</h1>
-<h2>Welcome to the TA-Course Matching Portal!</h2>
 <div>
+  <h1>TA-Course Matching Portal</h1>
   <nav>
     <ul>
       <li><a routerLink="">Home</a></li>
@@ -11,13 +10,13 @@
       <li><a routerLink="/applicants">Applicants page</a></li>
       <li><a routerLink="/ta-apply-and-rank">TA Applications Rankings</a></li>
       <li><a routerLink="/ece-ta-selection">ECE Department Member TA Selection</a></li>
-      <li *ngIf="!user"><button (click)="login()">Log In</button>
-      </li>
+      <li *ngIf="!user"><button (click)="login()">Log In</button></li>
       <li *ngIf="user"><button (click)="logout()">{{user.email}}<br>Log Out</button></li>
     </ul>
   </nav>
 </div>
 <div *ngIf="!user && showlogin">
+  <h1>Welcome</h1>
   <app-log-in></app-log-in>
 </div>
 <div>
@@ -27,33 +26,36 @@
   <p>&copy; Blue Cheese 2021</p>
 </div>
 <style type='text/css'>
-div {
-  padding-top: 25px;
-  padding-bottom: 25px;
-  margin-top: 25px;
-}
-  ul {
+  div {
+    position: relative;
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+  }
+
+  nav {
+    display: block;
+    background-color: gray;
+    padding: 0;
+    width: 100%;
+    position: fixed;
+    margin: 0 auto;
+  }
+
+  nav>ul {
+    margin: 0 auto;
     padding: 0;
     width: 100%;
     list-style: none;
   }
 
-  nav {
-    padding: 0;
-    width: 100%;
-    position: relative;
-    padding-top: 25px;
-    margin: 0 auto;
-    margin-top: 25px;
-    margin-bottom: 25px;
-  }
-
   nav>ul>li {
     float: left;
-    flex-direction: row;
   }
 
-  nav>ul>li>a, button {
+  nav>ul>li>a,
+  button {
+    outline: none;
+    border: none;
     background-color: gray;
     display: block;
     color: white;
@@ -62,17 +64,17 @@ div {
     text-decoration: none;
   }
 
-  nav>ul>li>a:hover, button:hover {
+  nav>ul>li>a:hover,
+  button:hover {
+    border: none;
     cursor: pointer;
     background-color: blue;
   }
 
-  body {
-    position: relative;
-    background: indigo;
-  }
-
   h1 {
+    position: relative;
+    margin: 0 auto;
+    padding: 25px 0 25px 0;
     color: white;
     text-align: center;
     background: indigo;
