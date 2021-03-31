@@ -257,6 +257,17 @@ router.route('/add-applicants')
 	})
 
 router.route("/login")
+	.get(auth.authenticateToken, (req, res) => {
+
+		return mongoClient.connect().then(() => {
+			return mongoClient.db(dbName).collection("users").findOne({ email: req.user.email }).then(user => {
+				return res.status(200).json({ "email": user.email });
+			});
+		}).catch(err => {
+			res.status(500).json(err);
+			console.log(err);
+		});
+	})
 	.post((req, res) => {
 		let schema = Joi.object({
 			email: Joi.string().trim().email({ tlds: { allow: false } }).max(256).required(), // tlds default is true (verifies with IANA list)
@@ -266,13 +277,14 @@ router.route("/login")
 		if (result.error) return res.status(400).json(result.error);
 
 		return mongoClient.connect().then(() => {
-			return mongoClient.db(dbName).collection("users").findOne({ name: app.name }).then(user => {
+			return mongoClient.db(dbName).collection("users").findOne({ email: req.body.email }).then(user => {
 				if (!user) return res.status(401).json({ message: "Email does not exist" });
 				if (req.body.password !== user.password) return res.status(401).json({ message: "Incorrect password" });
 
 				let token = auth.signToken({
 					email: user.email,
-					admin: user.admin
+					admin: user.admin,
+					verified: user.verified
 				});
 				return res.status(200).json({ "accessToken": token });
 			});
