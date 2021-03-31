@@ -15,31 +15,35 @@ export class LogInComponent implements OnInit {
   userError: boolean = false;
   passwordError: boolean = false;
 
+  test = ['bruh', 'bruh2'];
+
   constructor(
     private userService: UserService,
     private router: Router,
     private appComponent: AppComponent
-    ) { }
+  ) { }
 
   login() {
     let username = (document.getElementById("login-username") as HTMLInputElement).value;
     let password = (document.getElementById("login-password") as HTMLInputElement).value;
-    
+
     if (username === "" || password === "") return;
 
     this.userService.login(username, password).subscribe(
       data => {
         this.userService.setToken(data);
         this.passwordError = false;
+        this.redirectHome();
       },
       err => {
-        if (err) {
-          this.passwordError = true;
-        }
+        if (err) this.passwordError = true;
       }
     );
   }
 
-  ngOnInit(): void {
+  redirectHome() {
+    setTimeout(() => this.router.navigate(['/']), 1000);
   }
+
+  ngOnInit(): void { }
 }
