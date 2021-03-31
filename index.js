@@ -261,6 +261,7 @@ router.route("/login")
 
 		return mongoClient.connect().then(() => {
 			return mongoClient.db(dbName).collection("users").findOne({ email: req.user.email }).then(user => {
+				if (!user.verified) return res.status(401).json({ "message": "User not verified!" })
 				return res.status(200).json({ "email": user.email });
 			});
 		}).catch(err => {
@@ -279,6 +280,7 @@ router.route("/login")
 		return mongoClient.connect().then(() => {
 			return mongoClient.db(dbName).collection("users").findOne({ email: req.body.email }).then(user => {
 				if (!user) return res.status(401).json({ message: "Email does not exist" });
+				if (!user.verified) return res.status(401).json({ message: "User not verified!" });
 				if (req.body.password !== user.password) return res.status(401).json({ message: "Incorrect password" });
 
 				let token = auth.signToken({
@@ -290,6 +292,32 @@ router.route("/login")
 			});
 		}).catch(err => res.status(500).json(err));
 	});
+
+router.route("/signup")
+	.post((req, res) => {
+
+		// sanitize body with schema
+		let schema = Joi.object({
+			email: Joi.string().email().required(),
+			password: Joi.string().required()
+		});
+		let result = schema.validate(req.body);
+		if (result.error) return res.status(400).json(result.error);
+
+		req.body.verified = false;
+		req.body.admin = false;
+
+		// check email does not exist
+		return mongoClient.connect().then(() => {
+			mongoClient.db(dbName).collection("users").findOne({ email: req.body.email }).then(user => {
+				console.log(user);
+				// reject if email exists 
+				if (user) return res.status(400).json({ message: "E-mail already exists!" });
+				mongoClient.db(dbName).collection("users").insertOne(req.body);
+				return res.status(201).json({message: "Success"});
+			});
+		});
+	})
 
 app.use('/api', router);
 
