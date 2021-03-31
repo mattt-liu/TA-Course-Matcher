@@ -1,42 +1,81 @@
-
 <h1>SE 3350</h1>
 <h2>Welcome to the TA-Course Matching Portal!</h2>
-<nav>
-  <ul>
-    <li><a routerLink="">Home</a></li>
-    <li><a routerLink="/RequireTAPositionsComponent">Positions requiring TAs</a></li>
-    <li><a routerLink="/questions">Questions and qualifications</a></li>
-    <li><a routerLink="/hours">hours</a></li>
-    <li><a routerLink="/Info">Check course info and questions</a></li>
-    <li><a routerLink="/applicants">Applicants page</a></li>
-    <li><a routerLink="/ta-apply-and-rank">TA Applications Rankings</a></li>
-    <li><a routerLink="/ece-ta-selection">ECE Department Member TA Selection</a></li>
-  </ul>
-</nav>
+<div>
+  <nav>
+    <ul>
+      <li><a routerLink="">Home</a></li>
+      <li><a routerLink="/RequireTAPositionsComponent">Positions requiring TAs</a></li>
+      <li><a routerLink="/questions">Questions and qualifications</a></li>
+      <li><a routerLink="/hours">hours</a></li>
+      <li><a routerLink="/Info">Check course info and questions</a></li>
+      <li><a routerLink="/applicants">Applicants page</a></li>
+      <li><a routerLink="/ta-apply-and-rank">TA Applications Rankings</a></li>
+      <li><a routerLink="/ece-ta-selection">ECE Department Member TA Selection</a></li>
+      <li *ngIf="!user">
+        <app-log-in></app-log-in>>
+      </li>
+      <li *ngIf="user"><button (click)="logout()">Log Out</button></li>
+    </ul>
+  </nav>
+</div>
 <router-outlet></router-outlet>
-<p class = 'copy'>&copy; Blue Cheese 2021</p>
-<style type = 'text/css'>
-body{
-  background: indigo;
+<div class='copy'>
+  <p>&copy; Blue Cheese 2021</p>
+</div>
+<style type='text/css'>
+ul {
+  list-style: none;
 }
-h1{
-  color: white;
-  text-align: center;
-  background: indigo;
-}
-h2{
-  text-align: center;
-  color: white;
-  background: indigo;
-}
-nav{
-  text-align: center;
-  color: white;
-}
-.copy{
-  text-align: center;
-  color: white;
-  background: indigo;
-}
+  nav {
+    position: relative;
+    padding-top: 25px;
+    margin: 0 auto;
+    margin-top: 25px;
+    margin-bottom: 25px;
+  }
 
+  nav>ul>li {
+    float: left;
+    flex-direction: row;
+  }
+
+  nav>ul>li>a {
+    background-color: gray;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+  }
+
+  nav>ul>li>a:hover {
+    background-color: blue;
+  }
+
+  body {
+    position: relative;
+    background: indigo;
+  }
+
+  h1 {
+    color: white;
+    text-align: center;
+    background: indigo;
+  }
+
+  h2 {
+    text-align: center;
+    color: white;
+    background: indigo;
+  }
+
+  .copy {
+    margin: 0 auto;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    text-align: center;
+    color: white;
+    background: indigo;
+  }
 </style>
