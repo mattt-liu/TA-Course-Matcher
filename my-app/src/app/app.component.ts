@@ -35,7 +35,6 @@ export class AppComponent implements OnInit {
 	}
 
 	logout() {
-		console.log("LOGOUT");
 		this.userService.logout();
 		this.user = undefined;
         setTimeout(() => window.location.reload(), 100);
