@@ -314,9 +314,69 @@ router.route("/signup")
 				// reject if email exists 
 				if (user) return res.status(400).json({ message: "E-mail already exists!" });
 				mongoClient.db(dbName).collection("users").insertOne(req.body);
-				return res.status(201).json({message: "Success"});
+				return res.status(201).json({ message: "Success" });
 			});
 		});
+	});
+
+router.route("/users")
+	.get((req, res) => {
+		// admin gets list of users
+
+		// only admin access
+		if (!res.user) return res.status(401).json({ message: "401: Unauthorized" });
+		if (!res.user.admin) return res.status(403).json({ message: "403: Forbidden" });
+
+		return mongoClient.connect().then(() => {
+			let collection = mongoClient.db(dbName).collection("users").find();
+			// create array of users
+			return new Promise((resolve, reject) => {
+				let users = [];
+				collection.forEach(e => {
+					let u = {
+						email: e.email,
+						admin: e.admin,
+						verified: e.verified
+					}
+					users.push(u)
+				}, () => {
+					collection.close();
+					resolve(users);
+				})
+			}).then(users => {
+				// return array of users
+				return res.status(200).json(users);
+			});
+		})
+	})
+	.post((req, res) => {
+		// admin can verify a user
+
+		// only admin modify
+		if (!res.user) return res.status(401).json({ message: "401: Unauthorized" });
+		if (!res.user.admin) return res.status(403).json({ message: "403: Forbidden" });
+
+		// sanitize body
+		let schema = Joi.object({
+			email: Joi.string().email().required(),
+			verified: Joi.bool().required()
+		});
+		let result = schema.validate(req.body);
+		if (result.error) return res.status(400).json(result.error);
+
+		return mongoClient.connect().then(() => {
+			return mongoClient.db(dbName).collection("users").findOne({ email: req.body.email }).then(user => {
+				if (!user) return res.status(404).json({ message: "E-mail not found!" });
+
+				let newUser = user;
+				newUser.verified = req.body.verified;
+
+				return mongoClient.db(dbName).collection("users").deleteOne({ _id: user._id }).then(() => {
+					mongoClient.db(dbName).collection("users").insertOne(newUser);
+					return res.status(200).json({ message: "Success" });
+				});
+			});
+		})
 	})
 
 app.use('/api', router);
