@@ -33,7 +33,7 @@ function signToken(user) {
         email: user.email,
         admin: user.admin
     }
-    return jwt.sign(userSign, secret, { expiresIn: "15m" }); // TODO: create refresh token
+    return jwt.sign(userSign, secret, { expiresIn: "1h" }); // TODO: create refresh token
 }
 
 module.exports = {
