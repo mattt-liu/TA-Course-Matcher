@@ -36,7 +36,7 @@ export class LogInComponent implements OnInit {
         this.userService.setToken(data);
         this.passwordError = false;
         this.message = undefined;
-        setTimeout(() => window.location.reload(), 500)
+        window.location.reload();
       },
       err => {
         if (err.error.message) this.message = err.error.message;
