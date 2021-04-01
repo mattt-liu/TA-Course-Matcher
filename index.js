@@ -353,8 +353,8 @@ router.route("/users")
 		// admin can verify a user
 
 		// only admin modify
-		if (!res.user) return res.status(401).json({ message: "401: Unauthorized" });
-		if (!res.user.admin) return res.status(403).json({ message: "403: Forbidden" });
+		if (!req.user) return res.status(401).json({ message: "401: Unauthorized" });
+		if (!req.user.admin) return res.status(403).json({ message: "403: Forbidden" });
 
 		// sanitize body
 		let schema = Joi.object({
