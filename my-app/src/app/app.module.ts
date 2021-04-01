@@ -20,6 +20,8 @@ import { UploadApplicantComponent } from './upload-applicant/upload-applicant.co
 import { UploadRankingsComponent } from './upload-rankings/upload-rankings.component';
 import { LogInComponent } from './log-in/log-in.component';
 import { SignupComponent } from './signup/signup.component';
+import { AdjustTahoursComponent } from './adjust-tahours/adjust-tahours.component';
+import { TAservice } from './adjust-tahours/adjust-tahours.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import { SignupComponent } from './signup/signup.component';
     UploadApplicantComponent,
     UploadRankingsComponent,
     LogInComponent,
-    SignupComponent
+    SignupComponent,
+    AdjustTahoursComponent
   ],
   imports: [
     BrowserModule,
@@ -46,6 +49,7 @@ import { SignupComponent } from './signup/signup.component';
   ],
   providers: [
     ConfigService,
+    TAservice,
   ],
   bootstrap: [AppComponent]
 })
