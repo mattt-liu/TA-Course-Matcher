@@ -3,12 +3,12 @@
   <nav>
     <ul>
       <li><a routerLink="">Home</a></li>
-      <li><a routerLink="/RequireTAPositionsComponent">Positions requiring TAs</a></li>
+      <!-- <li><a routerLink="/RequireTAPositionsComponent">Positions requiring TAs</a></li> -->
       <li><a routerLink="/questions">Questions and qualifications</a></li>
       <li><a routerLink="/Info">Check course info and questions</a></li>
       <li><a routerLink="/applicants">Applicants page</a></li>
-      <li><a routerLink="/ta-apply-and-rank">TA Applications Rankings</a></li>
-      <li><a routerLink="/ece-ta-selection">ECE Department Member TA Selection</a></li>
+      <li><a routerLink="/ta-selection">Department TA Selection</a></li>
+      <li><a routerLink="/users">Users</a></li>
       <li *ngIf="!user"><button (click)="login()">Log In</button></li>
       <li *ngIf="user"><button (click)="logout()">Log Out</button></li>
     </ul>
@@ -21,11 +21,11 @@
   <h1>Welcome</h1>
   <app-log-in></app-log-in>
 </div>
-<div>
+<div style="margin-top: 25px; padding-top: 25px;">
   <router-outlet></router-outlet>
 </div>
 <div class='copy'>
-  <p>&copy; Blue Cheese 2021</p>
+  <p>&copy; Team 6 - "Blue Cheese" 2021</p>
 </div>
 <style type='text/css'>
   div {

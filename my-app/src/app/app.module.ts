@@ -20,6 +20,7 @@ import { UploadApplicantComponent } from './upload-applicant/upload-applicant.co
 import { UploadRankingsComponent } from './upload-rankings/upload-rankings.component';
 import { LogInComponent } from './log-in/log-in.component';
 import { SignupComponent } from './signup/signup.component';
+import { UserAdminComponent } from './user-admin/user-admin.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { SignupComponent } from './signup/signup.component';
     UploadApplicantComponent,
     UploadRankingsComponent,
     LogInComponent,
-    SignupComponent
+    SignupComponent,
+    UserAdminComponent
   ],
   imports: [
     BrowserModule,
