@@ -1,0 +1,68 @@
+<div *ngIf="users" class="users">
+    <h2>Users</h2>
+    <ol>
+        <li *ngFor="let u of users">
+            <label (click)="expand[users.indexOf(u)] = !expand[users.indexOf(u)]">
+                <u style="text-decoration-thickness: 1px;">{{u.email}}</u>
+                <span *ngIf="!expand[users.indexOf(u)]">&#x25BC;</span>
+                <span *ngIf="expand[users.indexOf(u)]">&#x25B2;</span>
+            </label>
+            <div *ngIf="expand[users.indexOf(u)]" style="margin-bottom: 5px;">
+                <span *ngIf="u.admin" style="color: rgb(0, 64, 255);">Admin</span>
+                <span *ngIf="!u.admin" style="color: rgb(196, 193, 34);">User</span>
+                <br>
+                <span *ngIf="u.verified" style="color: green;">
+                    &#10003; Verified 
+                </span>
+                <span *ngIf="!u.verified" style="color: red;">
+                    &#10006; Unverified <button (click)="verifyUser(u.email)">Verify</button>
+                </span>
+            </div>
+        </li>
+    </ol>
+</div>
+<div *ngIf="error" style="text-align: center;">
+    <h2>Admin access only!</h2>
+</div>
+<style>
+    .users {
+        margin: 0 auto;
+        width: 80%;
+    }
+
+    .users>ol {
+        padding: 0;
+    }
+
+    .users>ol>li {
+        padding: 0;
+        list-style: none;
+        margin-top: 5px;
+    }
+
+    .users>ol>li>label {
+        font-style: underline;
+        padding: 1px;
+        font-size: 16px;
+    }
+
+    .users>ol>li>label:hover {
+        background-color: lightgray;
+        cursor: pointer;
+    }
+
+    button {
+        background: transparent;
+        padding: 2px 5px 1px 5px;
+        border-style: solid;
+        border-radius: 3px;
+        border-width: 1px;
+        border-color: black;
+        outline: none;
+    }
+
+    button:hover {
+        height: 100%;
+        background-color: gray;
+    }
+</style>
