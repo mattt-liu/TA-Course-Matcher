@@ -320,12 +320,12 @@ router.route("/signup")
 	});
 
 router.route("/users")
-	.get((req, res) => {
+	.get(auth.authenticateToken, (req, res) => {
 		// admin gets list of users
 
 		// only admin access
-		if (!res.user) return res.status(401).json({ message: "401: Unauthorized" });
-		if (!res.user.admin) return res.status(403).json({ message: "403: Forbidden" });
+		if (!req.user) return res.status(401).json({ message: "401: Unauthorized" });
+		if (!req.user.admin) return res.status(403).json({ message: "403: Forbidden" });
 
 		return mongoClient.connect().then(() => {
 			let collection = mongoClient.db(dbName).collection("users").find();
@@ -349,7 +349,7 @@ router.route("/users")
 			});
 		})
 	})
-	.post((req, res) => {
+	.post(auth.authenticateToken, (req, res) => {
 		// admin can verify a user
 
 		// only admin modify
