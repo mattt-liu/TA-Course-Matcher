@@ -379,10 +379,6 @@ router.route("/users")
 		})
 	})
 
-app.use('/api', router);
-
-app.listen(port, () => console.log(`Listening on port ${port}...`));
-
 router.route('/assign')
 	.post((req, res) => {
 		// TODO: matt - change to posting rankings
@@ -910,10 +906,10 @@ router.route('/getapplicants') //Get the applicants and their answers to each qu
 		})
 	});
 
-	//post TA Hours
-	router.route('/replaceTAhours')
+//post TA Hours
+router.route('/replaceTAhours')
 	.post((req, res) => {
-		
+
 		const schema = Joi.object({
 			name: Joi.string().trim().required(),
 			hours: Joi.number().required(),
@@ -945,7 +941,8 @@ router.route('/getapplicants') //Get the applicants and their answers to each qu
 						return mongoClient.db("SE3350-TA-Course-Matching").collection("assigned").insertOne(newTA).then(() => {
 							return res.status(200).send(req.body);
 						});
-					});})
+					});
+				})
 				.catch(() => {
 					// if TA NOT exist
 					res.status(404).send('Not found');
@@ -953,22 +950,22 @@ router.route('/getapplicants') //Get the applicants and their answers to each qu
 		})
 	})
 
-	
-	//get TA Hours
 
-	router.route('/getTAhours')
+//get TA Hours
+
+router.route('/getTAhours')
 	.get((req, res) => {
 		return mongoClient.connect().then(() => {
 
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("assigned").find();
 
-	
+
 			return new Promise((resolve, reject) => {
 				let TAs = [];
 				collection.forEach(e => {
-					
-						TAs.push(e)
-					
+
+					TAs.push(e)
+
 				},
 					() => {
 						collection.close();
@@ -983,11 +980,8 @@ router.route('/getapplicants') //Get the applicants and their answers to each qu
 
 
 
+// #########
 
+app.use('/api', router);
 
-
-
-
-
-
-	
+app.listen(port, () => console.log(`Listening on port ${port}...`));
