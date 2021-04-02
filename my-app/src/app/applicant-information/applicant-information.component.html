@@ -1,39 +1,67 @@
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-
-
-
-<div *ngIf = "applicants.length != 0">
-    <button (click)= "display()">Click here to display the applicants for each course</button>
-</div>
-
-
-
 <div>
-    <table *ngIf = "filteredapplicants.length != 0"> 
-      <tr> 
-        <th>Name:</th>
-        <th></th>
-        <th>Email:</th>
-        <th></th>
-        <th>Course preference and questions:</th>
-        <th></th>
-        <th>Corresponding answers to questions:</th>
-  
-      </tr>
-      <tr *ngFor = "let i of filteredapplicants"> 
-        <td>{{i.name}}</td>
-        <td></td>
-        <td>{{i.email}}</td>
-        <td></td>
-        <td>{{i.appliedCourses}}</td>
-        <td></td>
-        <td>{{i.answers}}</td>
-      </tr>
-    </table>
+  <button (click)="bruh()">bruh</button>
+  <table *ngIf="applicants.length != 0" class="applicants">
+    <tr>
+      <th>Name:</th>
+      <th>Email:</th>
+    </tr>
+    <tr class="app-info" *ngFor="let app of applicants"
+      (click)="expand[applicants.indexOf(app)] = !expand[applicants.indexOf(app)]">
+      <td>
+        <u>{{app.name}}</u>
+        <div *ngIf="expand[applicants.indexOf(app)]" style="padding: 0 0 5px 0; font-size: 14px">
+          <ul class="app-list1">
+            <li *ngFor="let c of app.appliedCourses">{{c}}
+            </li>
+          </ul>
+          <ul class="app-list2">
+            <li *ngFor="let questions of answers[applicants.indexOf(app)].questions">
+              <ul>
+                <li *ngFor="let q of questions">{{q}}</li>
+              </ul>
+            </li>
+          </ul>
+          <ul class="app-list3">
+            <li *ngFor="let answers of answers[applicants.indexOf(app)].answers">
+              <ul>
+                <li *ngFor="let a of answers">{{a}}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </td>
+      <td>{{app.email}}</td>
+    </tr>
+  </table>
 </div>
+<style>
+  .applicants {
+    font-size: 18px;
+    border: none;
+    padding: 0;
+    background-color: lightgray;
+  }
+
+  .app-info,
+  .app-info>td {
+    vertical-align: top;
+    margin: 0 auto;
+    border: none;
+    padding: 0 15px 5px 5px;
+  }
+
+  .app-info:hover {
+    background-color: white;
+    cursor: pointer;
+  }
+
+  .app-list2, .app-list3 {
+    display: inline-block;
+    list-style: none;
+    
+  }
+
+  .app-list>li {
+    float: left;
+  }
+</style>
