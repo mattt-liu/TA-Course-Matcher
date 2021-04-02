@@ -22,6 +22,7 @@ import { LogInComponent } from './log-in/log-in.component';
 import { SignupComponent } from './signup/signup.component';
 import { AdjustTahoursComponent } from './adjust-tahours/adjust-tahours.component';
 import { TAservice } from './adjust-tahours/adjust-tahours.component';
+import { UserAdminComponent } from './user-admin/user-admin.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { TAservice } from './adjust-tahours/adjust-tahours.component';
     UploadRankingsComponent,
     LogInComponent,
     SignupComponent,
-    AdjustTahoursComponent
+    AdjustTahoursComponent,
+    UserAdminComponent
   ],
   imports: [
     BrowserModule,

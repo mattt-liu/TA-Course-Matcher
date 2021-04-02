@@ -3,57 +3,69 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class UserService {
 
-  constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient) { }
 
-  url = environment.apiUrl; 
-  
-  httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  };
+	url = environment.apiUrl;
 
-  login(username: string, password: string) {
+	httpOptions = {
+		headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+	};
 
-    let body = {
-      email: username,
-      password: password
-    }
+	login(username: string, password: string) {
 
-    return this.http.post(`${this.url}/api/login`, body);
-  }
+		let body = {
+			email: username,
+			password: password
+		}
 
-  signup(email, password) {
-    let body = {
-      email: email,
-      password: password
-    }
-    return this.http.post(`${this.url}/api/signup`, body);
-  }
+		return this.http.post(`${this.url}/api/login`, body);
+	}
 
-  getEmail() {
-    return this.http.get(`${this.url}/api/login`, {headers: this.getAuthorizationHeader()});
-  }
+	signup(email, password) {
+		let body = {
+			email: email,
+			password: password
+		}
+		return this.http.post(`${this.url}/api/signup`, body);
+	}
 
-  getAuthorizationHeader() {
-    let token = localStorage.getItem('token');
+	getEmail() {
+		return this.http.get(`${this.url}/api/login`, { headers: this.getAuthorizationHeader() });
+	}
 
-    if (!token) {
-      return {};
-    }
+	getAuthorizationHeader() {
+		let token = localStorage.getItem('token');
 
-    let headers = new HttpHeaders();
-    headers = headers.set('Authorization', 'Bearer '+token);
-    return headers;
-  }
+		if (!token) {
+			return {};
+		}
 
-  setToken(token) {
-    localStorage.setItem('token', token.accessToken);
-  }
+		let headers = new HttpHeaders();
+		headers = headers.set('Authorization', 'Bearer ' + token);
+		return headers;
+	}
 
-  logout() {
-    localStorage.removeItem('token');
-  }
+	setToken(token) {
+		localStorage.setItem('token', token.accessToken);
+	}
+
+	logout() {
+		localStorage.removeItem('token');
+	}
+
+	getUsers() {
+		return this.http.get(`${this.url}/api/users`, {headers: this.getAuthorizationHeader()});
+	}
+
+	verifyUser(email) {
+		let body = {
+			email: email,
+			verified: true
+		}
+		return this.http.post(`${this.url}/api/users`, body, {headers: this.getAuthorizationHeader()});
+	}
 }
