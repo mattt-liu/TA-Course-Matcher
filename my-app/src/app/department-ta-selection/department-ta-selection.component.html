@@ -14,7 +14,7 @@
                     </tr>
 
                     <!-- looping through courses data and rendering row for each course -->
-                    <tr *ngFor="let course of courseData" (click)="courseSelected(course.course)">
+                    <tr *ngFor="let course of courseData" (click)="courseSelected(course)">
                         <td class="courseLabel"> {{ course.course }} </td>
                         <td class="tdWithBorder"> {{ course.hours }} </td>
                         <td class="tdWithBorder"> {{ course.requires }} </td>

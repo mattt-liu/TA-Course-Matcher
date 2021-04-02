@@ -1,3 +1,5 @@
+import { createOfflineCompileUrlResolver } from '@angular/compiler';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { string } from 'joi';
 import { CoursesService } from '../courses.service'
@@ -27,13 +29,17 @@ export class DepartmentTASelectionComponent implements OnInit {
   alternativeApplicant = false;
   selectedApplicant; // either set to the default bestApplicant or to the applicant chosen from the dropdown if alternativeApplicant is true
   applicantSelected = false; // becomes true once the user clikcs the "choose this applicant" or "enter alternative applicant" button
+  selectedCourseHours; // the number of TA hours required to be assigned to the selected course
 
   // rankings arrays
     instructorRankings = [];  
     taRankings = [];    // format = [ {ta: "name", rankedThisCourse: 1}, ... ]
 
-  courseSelected(courseCode){
+  courseSelected(course){
+    let courseCode = course.course
     this.selectedCourse = courseCode;
+    this.selectedCourseHours = course.hours;
+    console.log("hours for course: " + this.selectedCourseHours);
     console.log(courseCode + " selected");
     this.showInstructorTable = true;
 
@@ -159,6 +165,12 @@ export class DepartmentTASelectionComponent implements OnInit {
       }
     
     console.log(weightData);
+
+    // todo now adjusting weight based on TA and course Hours
+    // let sleectedCourseHours = ?  <-- need to get this from thew formula
+    // let 
+
+    // here is also where we split the TA hours among multiple TAs ?
 
     let highestweight = 0;
     let highestApplicant;

@@ -676,4 +676,4 @@ router.route('/courses-insert-qualifications')
 					return res.status(200).send(result)
 				})
 		})
-	});
+});
