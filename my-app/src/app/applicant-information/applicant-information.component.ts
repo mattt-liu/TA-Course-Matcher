@@ -19,9 +19,11 @@ export class ApplicantInformationComponent implements OnInit {
   ngOnInit(): void {
     this._configservice.getapplicants().subscribe((data) => this.applicants = data);
     this._configservice.getquestions().subscribe((data) => this.questions = data);
+    setTimeout(() => this.display(), 250);
   }
 
   display(){
+    this.filteredapplicants = [];
 
     for (var key in this.applicants) {
       this.filteredapplicants.push(this.applicants[key])
