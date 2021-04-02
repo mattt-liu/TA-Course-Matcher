@@ -12,14 +12,14 @@ import { AdjustTahoursComponent } from './adjust-tahours/adjust-tahours.componen
 import { UserAdminComponent } from  './user-admin/user-admin.component';
 
 const routes: Routes = [
-  { path: 'questions', component: QuestionsMlComponent },
+  { path: 'upload', component: UploadApplicantComponent },
   { path: 'RequireTAPositionsComponent', component: RequireTAPositionsComponent},
   { path: 'hours', component: HoursComponent},
   { path: 'Info', component: CourseInfoAndQuestionsComponent},
   { path: 'applicants', component: ApplicantInformationComponent},
   { path: 'ta-apply-and-rank', component: TAApplyAndRankComponent },
   { path: 'adjusthours', component: AdjustTahoursComponent},
-  { path: 'ta-selection', component: DepartmentTASelectionComponent },
+  { path: 'view-applicants', component: DepartmentTASelectionComponent },
   { path: 'Info', component: CourseInfoAndQuestionsComponent},
   { path: 'users', component: UserAdminComponent }
 ]
