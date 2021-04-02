@@ -18,6 +18,7 @@ app.use(cors());
 
 const uri = "mongodb+srv://node:" + process.env.DB_PASSWORD_SECRET + "@uwo-se.0zbtu.mongodb.net/SE3350-TA-Course-Matching?retryWrites=true&w=majority";
 const mongoClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const mongoConnection = mongoClient.connect();
 const dbName = "SE3350-TA-Course-Matching";
 
 // ######## logs ########
@@ -32,12 +33,12 @@ app.use((req, res, next) => {
 router.route('/test')
 	// get all courses
 	.get((req, res) => {
-		res.status(200).send("Hello world");
+		return res.status(200).send("Hello world");
 	})
 
 router.route('/getcourses')
 	.get((req, res) => {
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
 
@@ -55,7 +56,7 @@ router.route('/getcourses')
 					});
 			})
 				.then((result) => {
-					return res.status(200).send(result)
+					return res.status(200).send(result);
 				})
 		})
 	});
@@ -76,7 +77,7 @@ router.route('/coursehours')
 
 		let hours = (req.body.prevHours / req.body.prevEnrol) * req.body.enrol;
 
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
 
@@ -134,7 +135,7 @@ router.route('/courses-ml')
 
 		if (result.error) return res.status(400).send(result.error); //.error.details[0].message)
 
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
 
@@ -188,7 +189,7 @@ router.route('/add-applicants')
 		const result = schema.validate(req.body);
 		if (result.error) return res.status(400).send(result.error);
 
-		mongoClient.connect().then(() => {
+		mongoConnection.then(() => {
 			// combine apps into array of apps
 			let combinedApps = [];
 			for (let row of req.body) {
@@ -259,7 +260,7 @@ router.route('/add-applicants')
 router.route("/login")
 	.get(auth.authenticateToken, (req, res) => {
 
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 			return mongoClient.db(dbName).collection("users").findOne({ email: req.user.email }).then(user => {
 				if (!user.verified) return res.status(401).json({ "message": "User not verified!" })
 				return res.status(200).json({ "email": user.email });
@@ -277,7 +278,7 @@ router.route("/login")
 		let result = schema.validate(req.body);
 		if (result.error) return res.status(400).json(result.error);
 
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 			return mongoClient.db(dbName).collection("users").findOne({ email: req.body.email }).then(user => {
 				if (!user) return res.status(401).json({ message: "Email does not exist" });
 				if (!user.verified) return res.status(401).json({ message: "User not verified!" });
@@ -308,7 +309,7 @@ router.route("/signup")
 		req.body.admin = false;
 
 		// check email does not exist
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 			mongoClient.db(dbName).collection("users").findOne({ email: req.body.email }).then(user => {
 				console.log(user);
 				// reject if email exists 
@@ -327,7 +328,7 @@ router.route("/users")
 		if (!req.user) return res.status(401).json({ message: "401: Unauthorized" });
 		if (!req.user.admin) return res.status(403).json({ message: "403: Forbidden" });
 
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 			let collection = mongoClient.db(dbName).collection("users").find();
 			// create array of users
 			return new Promise((resolve, reject) => {
@@ -364,7 +365,7 @@ router.route("/users")
 		let result = schema.validate(req.body);
 		if (result.error) return res.status(400).json(result.error);
 
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 			return mongoClient.db(dbName).collection("users").findOne({ email: req.body.email }).then(user => {
 				if (!user) return res.status(404).json({ message: "E-mail not found!" });
 
@@ -391,7 +392,7 @@ router.route('/assign')
 		const result = schema.validate(req.body);
 		if (result.error) return res.status(400).send(result.error);
 
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("assigned-applicants").find();
 
@@ -433,7 +434,7 @@ router.route('/applicant-rankings/:name')
 
 		let name = req.params.name.substr(0, 1).toUpperCase() + req.params.name.substr(1).toLowerCase(); // format name
 
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 			// get applicant's rankings
 			return mongoClient.db(dbName).collection("applicant-rankings").findOne({ name }).then(appRankings => {
 				if (!appRankings) return res.status(400).send("Not a valid applicant!")
@@ -514,7 +515,7 @@ router.route('/applicant-rankings/:name')
 
 		let name = req.params.name.substr(0, 1).toUpperCase() + req.params.name.substr(1).toLowerCase(); // format name
 
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 			// get applicant's rankings
 			return mongoClient.db(dbName).collection("applicant-rankings").findOne({ name }).then(appRankings => {
 				// check applicant has hours left (i.e. total = 10 hours, assigned = 5 hours)
@@ -617,7 +618,7 @@ router.route('/instructor-rankings/:course')
 
 		let course = req.params.course.toUpperCase();
 
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 			// get instructor rankings
 			return mongoClient.db(dbName).collection("instructor-rankings").findOne({ course }).then(instRankings => {
 				if (!instRankings) return res.status(404).send("Course not found");
@@ -703,7 +704,7 @@ router.route('/instructor-rankings/:course')
 
 		let course = req.params.course.toUpperCase();
 
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 			// get instructor rankings
 			return mongoClient.db(dbName).collection("instructor-rankings").findOne({ course }).then(instRankings => {
 				if (!instRankings) return res.status(404).send("Course not found");
@@ -818,7 +819,7 @@ router.route('/courses-insert-qualifications')
 
 		if (result.error) return res.status(400).send(result.error); //.error.details[0].message)
 
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
 
@@ -858,7 +859,7 @@ router.route('/courses-insert-qualifications')
 	});
 router.route('/getquestions')
 	.get((req, res) => {
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
 
@@ -883,7 +884,7 @@ router.route('/getquestions')
 
 router.route('/getapplicants') //Get the applicants and their answers to each question
 	.get((req, res) => {
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("applicant-rankings").find();
 
@@ -917,7 +918,7 @@ router.route('/replaceTAhours')
 		});
 		const result = schema.validate(req.body);
 		if (result.error) return res.status(400).send(result.error); //.error.details[0].message)
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("assigned").find();
 
 			// return promise that checks if that course exists
@@ -955,7 +956,7 @@ router.route('/replaceTAhours')
 
 router.route('/getTAhours')
 	.get((req, res) => {
-		return mongoClient.connect().then(() => {
+		return mongoConnection.then(() => {
 
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("assigned").find();
 
