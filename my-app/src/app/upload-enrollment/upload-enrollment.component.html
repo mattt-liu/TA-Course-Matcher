@@ -1,0 +1,6 @@
+<h1>Upload Enrollment</h1>
+<input type="file" #fileImportInput name="File Upload" id="csvFileUpload" (change)="fileListener($event)"
+    accept=".csv" />
+<div *ngIf="csvError" style="color: red;">
+    <p>Wrong file format!</p>
+</div>
