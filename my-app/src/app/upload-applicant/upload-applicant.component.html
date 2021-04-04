@@ -1,4 +1,4 @@
-<h1>Upload File</h1>
+<h1>Upload Applicant Input</h1>
 <input type="file" #fileImportInput name="File Upload" id="csvFileUpload" (change)="fileListener($event)"
     accept=".csv" />
 <div *ngIf="csvError" style="color: red;">
@@ -10,4 +10,7 @@
         <span *ngFor="let d of row.slice(0)">{{d}} </span>
     </p>
     <button (click)="saveData()">Submit</button>
+</div>
+<div>
+    <app-upload-enrollment></app-upload-enrollment>
 </div>
