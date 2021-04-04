@@ -23,7 +23,8 @@ import { SignupComponent } from './signup/signup.component';
 import { AdjustTahoursComponent } from './adjust-tahours/adjust-tahours.component';
 import { TAservice } from './adjust-tahours/adjust-tahours.component';
 import { UserAdminComponent } from './user-admin/user-admin.component';
-import { UploadEnrollmentComponent } from './upload-enrollment/upload-enrollment.component'
+import { UploadEnrollmentComponent } from './upload-enrollment/upload-enrollment.component';
+import { UploadCourseSetupComponent } from './upload-course-setup/upload-course-setup.component'
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { UploadEnrollmentComponent } from './upload-enrollment/upload-enrollment
     SignupComponent,
     AdjustTahoursComponent,
     UserAdminComponent,
-    UploadEnrollmentComponent
+    UploadEnrollmentComponent,
+    UploadCourseSetupComponent
   ],
   imports: [
     BrowserModule,

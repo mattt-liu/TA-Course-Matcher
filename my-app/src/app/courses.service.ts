@@ -45,4 +45,8 @@ export class CoursesService {
   getInstructorRankings(course){
     return this.http.get(`${environment.apiUrl}/api/instructor-rankings/${course}`);
   }
+
+  addCourse(course) {
+    return this.http.post(`${environment.apiUrl}/api/course-data`, course);
+  }
 }
