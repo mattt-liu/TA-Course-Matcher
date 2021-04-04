@@ -67,36 +67,21 @@ router.route('/coursehours')
 		// sanitize body with schema
 		const schema = Joi.object({
 			course: Joi.string().trim().required(),
-			prevHours: Joi.number().required(),
-			prevEnrol: Joi.number().required(),
-			enrol: Joi.number().required()
+			previousHours: Joi.number().required(),
+			previousEnroll: Joi.number().required(),
+			currentEnroll: Joi.number().required()
 		});
 		const result = schema.validate(req.body);
+		if (result.error) return res.status(400).send(result.error);
 
-		if (result.error) return res.status(400).send(result.error); //.error.details[0].message)
-
-		let hours = (req.body.prevHours / req.body.prevEnrol) * req.body.enrol;
+		let hours = Math.round((req.body.previousHours / req.body.previousEnroll) * req.body.currentEnroll);
+		req.body.course = req.body.course.toUpperCase();
 
 		return mongoConnection.then(() => {
 
-			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
-
-			// return promise that checks if that course exists
-			return new Promise((resolve, reject) => {
-
-				collection.forEach(e => {
-					if (e.course.toLowerCase() === req.body.course.toLowerCase()) {
-						resolve(e);
-					}
-				},
-					() => {
-						collection.close();
-						reject();
-					});
-			})
-				.then((result) => {
+			return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").findOne({ course: req.body.course })
+				.then(result => {
 					// if course exists
-
 					let newCourse = result;
 
 					newCourse.hours = hours;
@@ -109,6 +94,7 @@ router.route('/coursehours')
 				})
 				.catch(() => {
 					// if course NOT exist
+					// add course
 
 					let newCourse = req.body;
 
