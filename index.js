@@ -801,7 +801,6 @@ router.route('/courses-insert-qualifications')
 			qualifications: Joi.string().trim().required()
 		});
 		const result = schema.validate(req.body);
-
 		if (result.error) return res.status(400).send(result.error); //.error.details[0].message)
 
 		return mongoConnection.then(() => {
@@ -820,26 +819,23 @@ router.route('/courses-insert-qualifications')
 						collection.close();
 						reject();
 					});
-			})
-				.then((result) => {
-					// if course exists
-
-					let newCourse = result;
-
-					newCourse.qualifications = req.body.qualifications;
-
-					return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").deleteOne({ _id: result._id }).then(() => {
-						return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(newCourse).then(() => {
-							return res.status(200).send(req.body);
-						});
-					});
-				})
-				.catch(() => {
+			}).then((result) => {
+				if (!result) {
 					// if course NOT exist
 					mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(req.body);
-
 					return res.status(200).send(req.body);
+				}
+
+				// if course exists
+				let newCourse = result;
+				newCourse.qualifications = req.body.qualifications;
+
+				return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").deleteOne({ _id: result._id }).then(() => {
+					return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(newCourse).then(() => {
+						return res.status(200).send(req.body);
+					});
 				});
+			})
 		})
 	});
 router.route('/getquestions')
@@ -997,10 +993,10 @@ router.route('/course-data')
 
 				// update existing course 
 				let newCourse = result;
-				newCourse.name 			= req.body.name;
-				newCourse.lectureHours 	= req.body.lectureHours;
-				newCourse.labHours 		= req.body.labHours;
-				newCourse.sections 		= req.body.sections;
+				newCourse.name = req.body.name;
+				newCourse.lectureHours = req.body.lectureHours;
+				newCourse.labHours = req.body.labHours;
+				newCourse.sections = req.body.sections;
 				mongoClient.db(dbName).collection("courses").deleteOne({ _id: result._id }).then(() => {
 					mongoClient.db(dbName).collection("courses").insertOne(newCourse);
 					return res.status(200).json(req.body);
