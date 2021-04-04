@@ -13,14 +13,9 @@ import { UserAdminComponent } from  './user-admin/user-admin.component';
 
 const routes: Routes = [
   { path: 'upload', component: UploadApplicantComponent },
-  { path: 'RequireTAPositionsComponent', component: RequireTAPositionsComponent},
-  { path: 'hours', component: HoursComponent},
-  { path: 'Info', component: CourseInfoAndQuestionsComponent},
-  { path: 'applicants', component: ApplicantInformationComponent},
-  { path: 'ta-apply-and-rank', component: TAApplyAndRankComponent },
+  { path: 'view-courses', component: CourseInfoAndQuestionsComponent},
   { path: 'view-tas', component: AdjustTahoursComponent},
   { path: 'view-applicants', component: DepartmentTASelectionComponent },
-  { path: 'Info', component: CourseInfoAndQuestionsComponent},
   { path: 'users', component: UserAdminComponent }
 ]
 
