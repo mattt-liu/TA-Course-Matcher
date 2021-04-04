@@ -81,9 +81,19 @@ router.route('/coursehours')
 
 			return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").findOne({ course: req.body.course })
 				.then(result => {
+
+					// if course NOT exist
+					// add course
+					if (!result) {
+
+						let newCourse = req.body;
+						newCourse.hours = hours;
+
+						mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(newCourse);
+						return res.status(200).send(req.body);
+					}
 					// if course exists
 					let newCourse = result;
-
 					newCourse.hours = hours;
 
 					return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").deleteOne({ _id: result._id }).then(() => {
@@ -93,16 +103,6 @@ router.route('/coursehours')
 					});
 				})
 				.catch(() => {
-					// if course NOT exist
-					// add course
-
-					let newCourse = req.body;
-
-					newCourse.hours = hours;
-
-					mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(newCourse);
-
-					return res.status(200).send(req.body);
 				});
 
 		})
@@ -297,7 +297,6 @@ router.route("/signup")
 		// check email does not exist
 		return mongoConnection.then(() => {
 			mongoClient.db(dbName).collection("users").findOne({ email: req.body.email }).then(user => {
-				console.log(user);
 				// reject if email exists 
 				if (user) return res.status(400).json({ message: "E-mail already exists!" });
 				mongoClient.db(dbName).collection("users").insertOne(req.body);
@@ -965,7 +964,50 @@ router.route('/getTAhours')
 		})
 	});
 
+router.route('/course-data')
+	.post((req, res) => {
+		/**
+		 * post course set up info
+		 */
 
+		// sanitize body 
+		const schema = Joi.object({
+			course: Joi.string().trim().required(),
+			name: Joi.string().trim().required(),
+			lectureHours: Joi.number().required(),
+			labHours: Joi.number(),
+			sections: Joi.number().required()
+		});
+		const result = schema.validate(req.body);
+		if (result.error) return res.status(400).send(result.error);
+
+		// format body
+		if (!req.body.labHours) req.body.labHours = 0;
+		req.body.course = req.body.course.trim().toUpperCase();
+		req.body.name = req.body.course.trim().toUpperCase();
+
+		return mongoConnection.then(() => {
+			mongoClient.db(dbName).collection("courses").findOne({ course: req.body.course }).then(result => {
+
+				// add if course does not exist
+				if (!result) {
+					mongoClient.db(dbName).collection("courses").insertOne(req.body);
+					return res.status(200).json(req.body);
+				}
+
+				// update existing course 
+				let newCourse = result;
+				newCourse.name 			= req.body.name;
+				newCourse.lectureHours 	= req.body.lectureHours;
+				newCourse.labHours 		= req.body.labHours;
+				newCourse.sections 		= req.body.sections;
+				mongoClient.db(dbName).collection("courses").deleteOne({ _id: result._id }).then(() => {
+					mongoClient.db(dbName).collection("courses").insertOne(newCourse);
+					return res.status(200).json(req.body);
+				});
+			});
+		});
+	});
 
 // #########
 
