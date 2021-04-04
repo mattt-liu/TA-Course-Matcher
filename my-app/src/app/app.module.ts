@@ -23,6 +23,7 @@ import { SignupComponent } from './signup/signup.component';
 import { AdjustTahoursComponent } from './adjust-tahours/adjust-tahours.component';
 import { TAservice } from './adjust-tahours/adjust-tahours.component';
 import { UserAdminComponent } from './user-admin/user-admin.component';
+import { UploadEnrollmentComponent } from './upload-enrollment/upload-enrollment.component'
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { UserAdminComponent } from './user-admin/user-admin.component';
     LogInComponent,
     SignupComponent,
     AdjustTahoursComponent,
-    UserAdminComponent
+    UserAdminComponent,
+    UploadEnrollmentComponent
   ],
   imports: [
     BrowserModule,
