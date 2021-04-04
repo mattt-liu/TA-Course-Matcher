@@ -14,14 +14,29 @@
         <th>Course:</th>
         <th>Qualifications:</th>
         <th>Open TA positions:</th>
-        <th>Screening Questions:</th>
-  
+        <th>Questions:</th>
+        <th>Lecture Hours</th>
+        <th>Lab/Tut Hours</th>
+        <th>Sections</th>
       </tr>
       <tr> 
         <td>{{i.course}}</td>
         <td>{{i.qualifications}}</td>
         <td>{{i.requires}}</td>
         <td>{{i.questions}}</td>
+        <td>{{i.lectureHours}}</td>
+        <td>{{i.labHours}}</td>
+        <td>{{i.sections}}</td>
       </tr>
     </table>
 </div>
+<style>
+  .Searchresults > tr {
+    padding: 5px;
+    text-align: center;
+    background-color: lightgray;
+  }
+  .Searchresults > tr > th, .Searchresults > tr > td {
+    padding: 4px 8px 4px 8px;
+  }
+</style>

@@ -26,7 +26,6 @@ export class CourseInfoAndQuestionsComponent implements OnInit {
 
     this.infoArray =[];
     let dropdownChoice = (document.getElementById("dropdown") as HTMLInputElement).value; 
-    console.log(dropdownChoice)
 
     for (var key in this.courses) {
       if (this.courses[key].course == dropdownChoice)  {
