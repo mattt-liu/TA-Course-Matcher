@@ -42,16 +42,17 @@ export class AdjustTahoursComponent implements OnInit {
   constructor(private _TAservice:TAservice) { }
 
   ngOnInit(): void {
-    this._TAservice.getTA().subscribe((data) => this.TA = data);
+    this._TAservice.getTA().subscribe((data) => {
+      this.TA = data;
+      this.displayTA();
+    });
   }
 
   displayTA(){ 
+    this.display = []
     for (var key in this.TA) {
       this.display.push(this.TA[key])
     }
-
-    
-
   }
   searchTA(){ 
     let TAname = (document.getElementById("TAname") as HTMLInputElement).value; 

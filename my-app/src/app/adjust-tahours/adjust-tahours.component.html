@@ -1,32 +1,11 @@
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-
-
+<div>
+  <h1>Adjust TA Hours</h1>
 <div *ngIf = "TA.length != 0">
     <input type="text" id="TAname" placeholder ="TA Name"><br>
     <input type="text" id="TAcourse" placeholder ="TA Course"><br>
     <label for="newTAhours">Please input the new hours for the TA:</label><br>
     <input type="text" id="newTAhours" placeholder ="New TA hours"><br>
     <button (click)= "searchTA()">Replace hours</button>
-</div>
-
-<div>
-</div>
-
-<br>
-<br>
-<br>
-
-<div *ngIf = "TA.length != 0">
-    <button (click)= "displayTA()">Click here to display info for each TA</button>
 </div>
 <div>
     <table *ngIf = "display.length != 0"> 
@@ -47,3 +26,23 @@
       </tr>
     </table>
 </div>
+</div>
+<style>
+  div {
+    margin-top: 50px;
+  }
+  h1 {
+    position: relative;
+    margin: 0 auto;
+    padding: 25px 0 25px 0;
+    color: white;
+    text-align: center;
+    background: indigo;
+  }
+
+  h2 {
+    text-align: center;
+    color: white;
+    background: indigo;
+  }
+</style>

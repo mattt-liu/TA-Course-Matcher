@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: 'Info', component: CourseInfoAndQuestionsComponent},
   { path: 'applicants', component: ApplicantInformationComponent},
   { path: 'ta-apply-and-rank', component: TAApplyAndRankComponent },
-  { path: 'adjusthours', component: AdjustTahoursComponent},
+  { path: 'view-tas', component: AdjustTahoursComponent},
   { path: 'view-applicants', component: DepartmentTASelectionComponent },
   { path: 'Info', component: CourseInfoAndQuestionsComponent},
   { path: 'users', component: UserAdminComponent }
