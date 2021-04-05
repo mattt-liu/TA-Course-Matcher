@@ -1,28 +1,29 @@
-<div *ngIf="instructors">
-    <h1>Instructors</h1>
-    <ul>
-        <li *ngFor="let i of instructors">
-            {{i.instructor}}: {{i.course}}
-        </li>
-    </ul>
-    <div>
-        <h2>Edit Instructors</h2>
-        <p>Change the course assigned to each instructor</p>
-        <select id="dropdown" (click)="showInstructor()">
-            <option>-</option>
-            <option *ngFor="let i of instructors">{{i.instructor}}</option>
-        </select>
-        <div *ngIf="instructor">
-            {{instructor.instructor}} <input id="course" [(ngModel)]="instructor.course" placeholder="Assign a course">
-            <button (click)="addCourse()">Save</button>
-            <button (click)="cancelCourse()">Cancel</button>
+<div *ngIf="users" class="users">
+    <div *ngIf="instructors">
+        <h1>Instructors</h1>
+        <ul>
+            <li *ngFor="let i of instructors">
+                {{i.instructor}}: {{i.course}}
+            </li>
+        </ul>
+        <div>
+            <h2>Edit Instructors</h2>
+            <p>Change the course assigned to each instructor</p>
+            <select id="dropdown" (click)="showInstructor()">
+                <option>-</option>
+                <option *ngFor="let i of instructors">{{i.instructor}}</option>
+            </select>
+            <div *ngIf="instructor">
+                {{instructor.instructor}} <input id="course" [(ngModel)]="instructor.course"
+                    placeholder="Assign a course">
+                <button (click)="addCourse()">Save</button>
+                <button (click)="cancelCourse()">Cancel</button>
+            </div>
+        </div>
+        <div>
+            <app-upload-user></app-upload-user>
         </div>
     </div>
-    <div>
-        <app-upload-user></app-upload-user>
-    </div>
-</div>
-<div *ngIf="users" class="users">
     <h1>Users</h1>
     <ol>
         <li *ngFor="let u of users">
