@@ -14,7 +14,7 @@ export class CoursesService {
     return this.http.post(`${environment.apiUrl}/api/coursehours`, data);
   }
 
-  getCourseData(){
+  getCourseData() {
     return this.http.get(`${environment.apiUrl}/api/getcourses`);
   }
 
@@ -48,5 +48,9 @@ export class CoursesService {
 
   addCourse(course) {
     return this.http.post(`${environment.apiUrl}/api/course-data`, course);
+  }
+
+  requires(course) {
+    return this.http.post(`${environment.apiUrl}/api/getcourses`, course);
   }
 }
