@@ -72,8 +72,11 @@ export class CourseInfoAndQuestionsComponent implements OnInit {
       course: this.selectedCourse.course,
       requires: this.selectedCourse.requires
     }
+    if (course.requires === undefined) {
+      return setTimeout(() => window.location.reload(), 100);
+    }
     this.courseService.requires(course).subscribe(() => {
-      this.cancel();
+      setTimeout(() => window.location.reload(), 100);
     });
   }
 
@@ -87,6 +90,5 @@ export class CourseInfoAndQuestionsComponent implements OnInit {
     this.selectedCourse = undefined;
     (document.getElementById("dropdown") as HTMLInputElement).value = ""; 
     (document.getElementById("question-input") as HTMLInputElement).value = ""; 
-    setTimeout(() => window.location.reload(), 100);
   }
 }
