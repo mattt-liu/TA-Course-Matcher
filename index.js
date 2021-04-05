@@ -1141,7 +1141,7 @@ router.route('/replacecoursehours')
 //get course Hours
 router.route('/getcoursehours')
 .get((req, res) => {
-	return mongoConnection().then(() => {
+	return mongoConnection.then(() => {
 
 		let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
 
