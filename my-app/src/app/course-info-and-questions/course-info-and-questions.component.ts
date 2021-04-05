@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfigService } from '../require-tapositions/require-tapositions.component';
 import { courses } from '../require-tapositions/needsTAs';
+import { QuestionsService } from '../questions.service';
 
 
 @Component({
@@ -11,8 +12,12 @@ import { courses } from '../require-tapositions/needsTAs';
 export class CourseInfoAndQuestionsComponent implements OnInit {
   courses = [];
   infoArray = [];
+  selectedCourse = undefined;
 
-  constructor(private _configservice:ConfigService) { 
+  constructor(
+    private _configservice:ConfigService,
+    private qService: QuestionsService
+    ) { 
     
   }
 
@@ -29,6 +34,7 @@ export class CourseInfoAndQuestionsComponent implements OnInit {
 
     for (var key in this.courses) {
       if (this.courses[key].course == dropdownChoice)  {
+        this.selectedCourse = this.courses[key];
         this.infoArray.push(this.courses[key])
       }
     
@@ -36,6 +42,21 @@ export class CourseInfoAndQuestionsComponent implements OnInit {
 
 
 
+  }
+
+  submitQuestion() {
+    let questioninput = (document.getElementById("question-input") as HTMLInputElement).value; 
+
+    let questions = [questioninput];
+    let obj = {
+      course: this.selectedCourse.course,
+      questions: questions
+    }
+    console.log(obj)
+    this.qService.createQuestions(obj).subscribe(() => {
+      (document.getElementById("question-input") as HTMLInputElement).value = ""; 
+      setTimeout(() => window.location.reload(), 100);
+    });
   }
 
 }

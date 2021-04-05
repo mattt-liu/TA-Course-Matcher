@@ -1,12 +1,10 @@
 <h1>Courses</h1>
 <p class ="bold">Select the course you would like to be sent the course information and qualifying questions for:</p>
 
-<select id = "dropdown">
+<select id = "dropdown" (click)="showInformation()">
 <option></option>
 <option *ngFor="let obj of courses">{{obj.course}}</option>
 </select>
-
-<button (click)= "showInformation()">Click here to show information of a course</button>
 
 <div>
     <table class = "Searchresults" *ngFor = "let i of infoArray"> 
@@ -30,6 +28,12 @@
       </tr>
     </table>
 </div>
+
+<div *ngIf="selectedCourse">
+  <h2 style="margin-top: 25px;">Edit Course: {{selectedCourse.course}}</h2>
+  <input id="question-input" placeholder="Enter a question" size="50">
+  <br><button (click)="submitQuestion()">Submit</button>
+  </div>
 <style>
   .Searchresults > tr {
     padding: 5px;
