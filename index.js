@@ -118,26 +118,13 @@ router.route('/courses-ml')
 			questions: Joi.array().items(Joi.string()).required()
 		});
 		const result = schema.validate(req.body);
-
 		if (result.error) return res.status(400).send(result.error); //.error.details[0].message)
+
+		req.body.course = req.body.course.toUpperCase();
 
 		return mongoConnection.then(() => {
 
-			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
-
-			// return promise that checks if that course exists
-			return new Promise((resolve, reject) => {
-
-				collection.forEach(e => {
-					if (e.course.toLowerCase() === req.body.course.toLowerCase()) {
-						resolve(e);
-					}
-				},
-					() => {
-						collection.close();
-						reject();
-					});
-			}).then((result) => {
+			return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").findOne({ course: req.body.course }).then((result) => {
 
 				if (!result) {
 					// if course doest NOT exist
@@ -148,8 +135,7 @@ router.route('/courses-ml')
 				// if course exists
 
 				let newCourse = result;
-
-				newCourse.questions.concat(req.body.questions);
+				newCourse.questions = newCourse.questions.concat(req.body.questions);
 
 				return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").deleteOne({ _id: result._id }).then(() => {
 					return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(newCourse).then(() => {
