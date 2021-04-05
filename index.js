@@ -1105,7 +1105,7 @@ router.route('/replacecoursehours')
 	});
 	const result = schema.validate(req.body);
 	if (result.error) return res.status(400).send(result.error); //.error.details[0].message)
-	return mongoClient.connect().then(() => {
+	return mongoConnection().then(() => {
 		let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
 
 		// return promise that checks if that course exists
@@ -1141,7 +1141,7 @@ router.route('/replacecoursehours')
 //get course Hours
 router.route('/getcoursehours')
 .get((req, res) => {
-	return mongoClient.connect().then(() => {
+	return mongoConnection().then(() => {
 
 		let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
 
