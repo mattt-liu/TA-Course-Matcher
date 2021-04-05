@@ -1,7 +1,8 @@
 import { createOfflineCompileUrlResolver } from '@angular/compiler';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
-import { Component, OnInit } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnInit } from '@angular/core';
 import { string } from 'joi';
+import { isUndefined } from 'util';
 import { CoursesService } from '../courses.service'
 
 @Component({
@@ -33,35 +34,25 @@ export class DepartmentTASelectionComponent implements OnInit {
 
   // rankings arrays
     instructorRankings = [];  
+    //initialInstructorRankings = []; // the same as instructorRankings but we modify the instructor rankings in the getBestApplicsnt() method but we don't want to show those changes in the HTML tables (todo make one local)
     taRankings = [];    // format = [ {ta: "name", rankedThisCourse: 1}, ... ]
 
   courseSelected(course){
     let courseCode = course.course
     this.selectedCourse = courseCode;
     this.selectedCourseHours = course.hours;
-    console.log("hours for course: " + this.selectedCourseHours);
     console.log(courseCode + " selected");
     this.showInstructorTable = true;
 
     // getting the list of rankings
     this.CoursesService.getInstructorRankings(courseCode).subscribe((data) => {
-      this.instructorRankings = data as any;
+      this.instructorRankings = (data as Array<any>).slice();
+      //this.initialInstructorRankings = (data as Array<any>).slice();
+      //console.log(this.initialInstructorRankings);
       console.log(this.instructorRankings);
 
       // after loading instructor rankings, calculate best applicant
       this.getBestApplicant();
-
-      // finding the rankings for the selected course and assigning it to out object
-
-      // for(let ranking of instructorRankingList){
-      //   if(ranking.course == this.selectedCourse){
-      //     this.instructorRankings = ranking.rankings;
-      //     this.selectedCourseInstructor = ranking.instructor;
-      //   }
-      // }
-      // if(this.instructorRankings.length == 0){
-      //   console.log("Error, rankings were not assigned; selected course did not match any course code in the 'instructor-rankings' db collection");
-      // }
     }); 
 
     
@@ -125,6 +116,9 @@ export class DepartmentTASelectionComponent implements OnInit {
   getBestApplicant(){
 
     let weightData = {};
+    
+    let instructorRankings = [];
+    this.instructorRankings.forEach(val => instructorRankings.push(Object.assign({}, val)));
 
     // { taNAme: 5, taName: 3}
 
@@ -132,20 +126,20 @@ export class DepartmentTASelectionComponent implements OnInit {
     // also giving them a ranking based on their status
     // status 1 gets weight = 4, status 2 gets weight = 2, status 3 gets weight = 0
 
-      for(let i = 0; i < this.instructorRankings.length; i++){
-        weightData[this.instructorRankings[i].name] = this.instructorRankings.length - i;
+      for(let i = 0; i < instructorRankings.length; i++){
+        weightData[instructorRankings[i].name] = instructorRankings.length - i;
 
-        if(this.instructorRankings[i].status != 1 && this.instructorRankings[i].status != 2 && this.instructorRankings[i].status != 3 ){
+        if(instructorRankings[i].status != 1 && instructorRankings[i].status != 2 && instructorRankings[i].status != 3 ){
           console.log("Error, applicant does not have status property of value 1, 2 or 3");
         }
 
         // giving weight based on status
-        if(this.instructorRankings[i].status == 1){
-          weightData[this.instructorRankings[i].name] += 4;
+        if(instructorRankings[i].status == 1){
+          weightData[instructorRankings[i].name] += 4;
         }
 
-        else if(this.instructorRankings[i].status == 2){
-          weightData[this.instructorRankings[i].name] += 2;
+        else if(instructorRankings[i].status == 2){
+          weightData[instructorRankings[i].name] += 2;
         }
         // give no additional weight is status == 3
       }
@@ -168,24 +162,215 @@ export class DepartmentTASelectionComponent implements OnInit {
 
     // todo now adjusting weight based on TA and course Hours
     // let sleectedCourseHours = ?  <-- need to get this from thew formula
-    // let 
+    let selectedCourseHours = 15; //this.selectedCourseHours;
+    console.log("Selected course hours: " + selectedCourseHours);
 
     // here is also where we split the TA hours among multiple TAs ?
 
-    let highestweight = 0;
-    let highestApplicant;
+    let highestWeight = 0;
+    //let chosenApplicants = []; remoed; same as assignedHours
+    let bestApplicant;
+    let remainingCourseHours = selectedCourseHours;
+    let assignedHours = {};
 
+    
     // selecting the best applicant based on weight now and setting it to bestApplicant property
       
-      for(let i of Object.keys(weightData)){
-        if(weightData[i] > highestweight){
-          highestweight = weightData[i];
-          highestApplicant = i;
-        }
-      }
+      outerLoop: for(let x = 0; ; x++) { // this loop is used to repeat the assignment process as many times until enough TAs have been assigned to cover the courses requred hours.
+        
+        if(remainingCourseHours >= 10){  // just in case some course doesn't have less than 10 hours to start (alglorithm would break)
 
-      console.log("highest ranked applicant: " + highestApplicant);
-      this.bestApplicant = highestApplicant;
+          if(!this.checkTAs(assignedHours)){ // check if there are even any remaining TAs
+            console.log("error, no remaining TAs");
+            break outerLoop;
+          }
+
+          for(let i of instructorRankings){  // adding 4 weight if the TA has the exact number of hours to fulfill the course
+            if(i.hoursLeft == remainingCourseHours){
+              weightData[i.name] += 4;
+            }
+          }
+            
+          // finding the next best applicant that has not already been assigned hours
+
+            for(let i of Object.keys(weightData)){  
+
+              if(weightData[i] > highestWeight && (!Object.keys(assignedHours).includes(i)) ){  // also check if the "highest weighted applicant" has already been assigned hours (since we looping through)
+                highestWeight = weightData[i];
+                bestApplicant = i;
+              }
+            }
+
+          // now assign that applicant their desired hours
+
+                // loop through instructor rankings, get the hours the TA applied for (for this course specifically) and assign them to the TA
+                  
+                  for(let applicant of instructorRankings){
+                    if(applicant.name == bestApplicant){
+                      assignedHours[bestApplicant] = applicant.hoursLeft; // todo fix backend to get hours specific to course; this doesnt work rn
+                      remainingCourseHours -= applicant.hoursLeft;
+                      console.log(applicant.hoursLeft + " hours assigned to " + bestApplicant + "\n remaining course hours: " + remainingCourseHours);
+                      applicant.hoursLeft = 0;    // this sets it to zero yea? pass by reference? todo verify
+                    }
+                  }
+          }
+          bestApplicant = undefined;  // resetting before we get the next best
+          highestWeight = 0;
+        
+          if(remainingCourseHours == 0){
+            console.log("zero course hours left to be assigned; assignment complete");
+            break outerLoop;
+          }
+        
+          // now checking if the remaining hours are less than 10 so that we need to assign one more TA partial hours and be done
+
+            if(remainingCourseHours < 5){     // assign the next best TA who signed up for 5 hours or has less than 5 (the exact amount)
+
+              if(!this.checkTAs(assignedHours)){ // check if there are even any remaining TAs
+                console.log("error, no remaining TAs");
+                break outerLoop;
+              }
+              
+              for(let i of instructorRankings){
+
+                if(i.hoursLeft !<= 5){
+                  continue;
+                }        
+
+                if(i.hoursLeft == remainingCourseHours){ // add 4 weight if they have the exact number of hours (or 3?)
+                  weightData[i.name] += 4;
+                }
+
+                if(weightData[i.name] > highestWeight && (!Object.keys(assignedHours).includes(i))){  // also check if the "highest weighted applicant" has already been assigned hours (since we looping through)
+                  highestWeight = weightData[i];
+                  bestApplicant = i.name;
+                }
+              }
+
+              // now assign the TA the remaining course hours (will be one or more less than what they wanted)
+                assignedHours[bestApplicant] = remainingCourseHours;
+                console.log(remainingCourseHours + " hours assigned to " + bestApplicant + "\n remaining course hours: 0");
+                remainingCourseHours = 0;
+              
+              // no need to reduce the instructor rankings because we are done
+              // actually probably best to since we need to push this shit when we submit
+                for(let i of instructorRankings){
+                  if(i.name == bestApplicant){
+                    i.hoursLeft -= remainingCourseHours;
+                  }
+                }
+
+              // now loop through the weightData and grab the applicant that has the highest weight as calculated above
+
+              console.log("the course has now been fully assigned");
+              break outerLoop; 
+            }
+            else if(remainingCourseHours <= 10){  // else if between 5 and 10 assign to the next best TA who picked 10 hours
+
+              if(!this.checkTAs(assignedHours)){ // check if there are even any remaining TAs
+                console.log("error, no remaining TAs");
+                break outerLoop;
+              }
+
+              // edge case for exactly 5 
+
+                if(remainingCourseHours == 5){
+
+                  // check if there is even a TA with exactly 5, put them into array
+                  let fittingTAs = [];
+                  for(let i of instructorRankings){
+                    if(i.hoursLeft == 5){
+                      fittingTAs.push(i.name);
+                      console.log(i.name + " added to fitting TAs");
+                    }
+                  }
+
+                  if(fittingTAs.length != 0){
+
+                    // getting the highest weighted TA in the array of those who have exactly 5 hours
+                    for(let i of Object.keys(weightData)){
+                      if(weightData[i] > highestWeight && (!Object.keys(assignedHours).includes(i))){
+                        highestWeight = weightData[i];
+                        bestApplicant = i;
+                      }
+                    }
+                    // and now assigning them
+                      assignedHours[bestApplicant] = remainingCourseHours;
+                      console.log(remainingCourseHours + " hours assigned to " + bestApplicant + "\n remaining course hours: 0");
+                      remainingCourseHours = 0;
+                      
+                      // reducing instructor rakings since we are gunna push this to db
+                      for(let i of instructorRankings){
+                        if(i.name == bestApplicant){
+                          i.hoursLeft -= remainingCourseHours;
+                        }
+                      }
+                  }
+
+                  // todo do something when fitting TAs length is zero?
+                  console.log("fitting TAs array length zero;")
+                }
+                else {
+                  // else continue on and assign a TA with more than 5 hours
+
+                      for(let i of instructorRankings){
+
+                          console.log(i);
+                          
+                          if(i.hoursLeft < remainingCourseHours){ // TODO do check at end if there is still no TA assigned (none with more hours but that could be assigned, assign one with less than the number of hours? or just leave it and don;t assign a TA?)
+                            console.log(i.name + " has less than " + remainingCourseHours + " hours left, skipping");
+                            continue;
+                          }
+
+                          if(i.hoursLeft == remainingCourseHours){ // add 4 weight if they have the exact number of hours (or 3?)
+                            weightData[i.name] += 4;
+                            console.log(i.name + " has the exact number of hours; adding 4 weight");
+                          }
+
+                          if(weightData[i.name] > highestWeight && (!Object.keys(assignedHours).includes(i))){  // also check if the "highest weighted applicant" has already been assigned hours (since we looping through)
+                            highestWeight = weightData[i];
+                            console.log(i);
+                            bestApplicant = i.name;
+                          }
+                      }
+
+                    // now assign the TA said amount of hours
+                      assignedHours[bestApplicant] = remainingCourseHours;
+                      console.log(remainingCourseHours + " hours assigned to " + bestApplicant + "\n remaining course hours: 0");
+                      remainingCourseHours = 0;
+
+                    // reducing instructor rakings since we are gunna push this to db
+                      for(let i of instructorRankings){
+                        if(i.name == bestApplicant){
+                          i.hoursLeft -= remainingCourseHours;
+                        }
+                      }
+                }
+              console.log("the course has now been fully assigned");
+              break outerLoop;
+            }
+          // else reloop and assign another TA, then repeat
+      }
+      
+      console.log("assigned TAs");
+
+      // TODO big assignment "plan" that considers all courses and TAs at the same time rather than one at a time? More ""
+      // TODO show "this course has been fully assigned" message if so. API returns error for this so we'd need to catch it and show the messsage. 
+      // ^Could also link to other component so that the hours can be adjusted manually
+
+      //console.log("highest ranked applicant: " + highestApplicant);
+      //this.bestApplicant = highestApplicant;
+  }
+
+  checkTAs(assignedHours){
+    let instructorRankings = this.instructorRankings.slice();
+
+    for(let i of instructorRankings){
+      if(Object.keys(assignedHours).includes(i.name) || i == undefined || i == null){
+        continue;
+      }
+      return true;
+    }
   }
 
   // asssign the suggested applicant to the TA for this class

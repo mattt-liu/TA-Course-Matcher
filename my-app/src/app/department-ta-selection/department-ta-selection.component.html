@@ -1,5 +1,5 @@
 <h1 style="color: indigo; font-weight: 800;">TA Selection Component</h1>
-<table class="tableNoBorder"> 
+<table class="tableNoBorder">
     <tr style="text-align: top; margin-top: 5px; height: 10%;">
         <td class="leftInnerTableTd">
             <div class="innerTableDiv">
@@ -88,7 +88,7 @@
                                     <td style="width: 5%; text-align: center;"><h2>OR</h2></td>
                                        
                                     <td style="height: 10%; width: 20%;">
-                                        <button (click)="alternativeApplicant = !alternativeApplicant">Enter alternative applicant</button>
+                                        <button (click)="alternativeApplicant = !alternativeApplicant; applicantSelected = true;">Enter alternative applicant</button>
                                         <ng-container *ngIf="alternativeApplicant">
                                             <select id="taSelection" [(ngModel)]="this.selectedApplicant">
                                                 <option *ngFor="let applicant of this.instructorRankings" [value]="applicant.name">{{ applicant.name }}</option>
