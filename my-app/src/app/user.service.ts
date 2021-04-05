@@ -61,6 +61,18 @@ export class UserService {
 		return this.http.get(`${this.url}/api/users`, {headers: this.getAuthorizationHeader()});
 	}
 
+	addInstructorCourse(instructor) {
+		return this.http.post(`${this.url}/api/instructors`, instructor, {headers: this.getAuthorizationHeader()});
+	}
+
+	addInstructor(instructor) {
+		return this.http.post(`${this.url}/api/add-instructor`, instructor, {headers: this.getAuthorizationHeader()});
+	}
+
+	getInstructors() {
+		return this.http.get(`${this.url}/api/instructors`, {headers: this.getAuthorizationHeader()});
+	}
+
 	verifyUser(email) {
 		let body = {
 			email: email,
