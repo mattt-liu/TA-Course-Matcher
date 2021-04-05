@@ -36,11 +36,9 @@ export class ApplicantInformationComponent implements OnInit {
 
         if (this.filteredapplicants[i].appliedCourses[j].toUpperCase() == this.questions[k].course) {
 
-        console.log(this.filteredapplicants[i].appliedCourses[j]+"-"+this.questions[k].course) 
         
         //simply print the questions for that course
         for (var l in this.questions[k].questions) {
-         console.log(this.questions[k].questions[l])
          this.filteredapplicants[i].appliedCourses[j] = (this.filteredapplicants[i].appliedCourses[j]+"-"+this.questions[k].questions[l])
 
         }

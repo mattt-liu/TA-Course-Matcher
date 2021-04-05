@@ -34,13 +34,11 @@ export class DepartmentTASelectionComponent implements OnInit {
 
   courseSelected(courseCode){
     this.selectedCourse = courseCode;
-    console.log(courseCode + " selected");
     this.showInstructorTable = true;
 
     // getting the list of rankings
     this.CoursesService.getInstructorRankings(courseCode).subscribe((data) => {
       this.instructorRankings = data as any;
-      console.log(this.instructorRankings);
 
       // after loading instructor rankings, calculate best applicant
       this.getBestApplicant();
@@ -81,7 +79,6 @@ export class DepartmentTASelectionComponent implements OnInit {
   getCourseList(){
     this.CoursesService.getCourseData().subscribe((data) => {
       this.courseData = data as any;
-      console.log(this.courseData);
     });
   }
 
