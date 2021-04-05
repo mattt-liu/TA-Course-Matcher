@@ -29,6 +29,8 @@ import { UploadCourseSetupComponent } from './upload-course-setup/upload-course-
 import { UploadUserComponent } from './upload-user/upload-user.component';
 import { ExportCourseComponent } from './export-course/export-course.component';
 import { HomeComponent } from './home/home.component'
+import { AdjustCoursehoursComponent } from './adjust-coursehours/adjust-coursehours.component';
+import { courseService } from './adjust-coursehours/adjust-coursehours.component'
 
 @NgModule({
   declarations: [
@@ -51,7 +53,8 @@ import { HomeComponent } from './home/home.component'
     UploadCourseSetupComponent,
     UploadUserComponent,
     ExportCourseComponent,
-    HomeComponent
+    HomeComponent,
+    AdjustCoursehoursComponent
   ],
   imports: [
     BrowserModule,
@@ -64,6 +67,7 @@ import { HomeComponent } from './home/home.component'
   providers: [
     ConfigService,
     TAservice,
+    courseService
   ],
   bootstrap: [AppComponent]
 })

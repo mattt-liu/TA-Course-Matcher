@@ -1,0 +1,46 @@
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<div *ngIf = "courses.length != 0">
+    <input type="text" id="courseName" placeholder ="Course Name"><br>
+    <label for="newCoursehours">Please input the new time requirements for this course:</label><br>
+    <input type="text" id="newCoursehours" placeholder ="New Course hours"><br>
+    <button (click)= "searchCourse()">Replace hours</button>
+</div>
+
+
+<br>
+<br>
+<br>
+
+<div *ngIf = "courses.length != 0">
+    <button (click)= "displayCourse()">Click here to display info for each course</button>
+</div>
+<div>
+    <table *ngIf = "display.length != 0"> 
+      <tr> 
+        <th>Course:</th>
+        <th></th>
+        <th>Hours:</th>
+        <th></th>
+        <th>Requires TA position:</th>
+      </tr>
+
+      <tr *ngFor = "let i of display"> 
+        <td>{{i.course}}</td>
+        <td></td>
+        <td>{{i.hours}}</td>
+        <td></td>
+        <td>{{i.requires}}</td>
+      </tr>
+    </table>
+</div>
