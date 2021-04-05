@@ -59,7 +59,41 @@ router.route('/getcourses')
 					return res.status(200).send(result);
 				})
 		})
-	});
+	})
+	// change if a course "requires" TA's
+	.post((req, res) => {
+		// course questions
+
+		// sanitize body with schema
+		const schema = Joi.object({
+			course: Joi.string().trim().required(),
+			requires: Joi.bool().required()
+		});
+		let result = schema.validate(req.body);
+		if (result.error) return res.status(400).send(result.error); 
+		req.body.course = req.body.course.toUpperCase();
+
+		return mongoConnection.then(() => {
+			return mongoClient.db(dbName).collection("courses").findOne({ course: req.body.course }).then((result) => {
+				// if course does NOT exist
+				if (!result) {
+					// add the course
+					mongoClient.db(dbName).collection("courses").insertOne(req.body);
+					return res.status(200).send(req.body);
+				}
+				// if course exists
+				// modify the existing one
+				let newCourse = result;
+				newCourse.requires = req.body.requires;
+
+				return mongoClient.db(dbName).collection("courses").deleteOne({ _id: result._id }).then(() => {
+					return mongoClient.db(dbName).collection("courses").insertOne(newCourse).then(() => {
+						return res.status(200).send(req.body);
+					});
+				});
+			})
+		})
+	})
 
 router.route('/coursehours')
 	// post course hours
@@ -135,7 +169,13 @@ router.route('/courses-ml')
 				// if course exists
 
 				let newCourse = result;
-				newCourse.questions = newCourse.questions.concat(req.body.questions);
+				
+				// don't add duplicate questions
+				let noDuplicates = []
+				for (let q of req.body.questions) {
+					if (!result.questions.includes(q)) noDuplicates.push(q);
+				}
+				newCourse.questions = newCourse.questions.concat(noDuplicates);
 
 				return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").deleteOne({ _id: result._id }).then(() => {
 					return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(newCourse).then(() => {
