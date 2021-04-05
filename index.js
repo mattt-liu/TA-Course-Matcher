@@ -137,26 +137,26 @@ router.route('/courses-ml')
 						collection.close();
 						reject();
 					});
-			})
-				.then((result) => {
-					// if course exists
+			}).then((result) => {
 
-					let newCourse = result;
-
-					newCourse.questions = req.body.questions;
-
-					return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").deleteOne({ _id: result._id }).then(() => {
-						return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(newCourse).then(() => {
-							return res.status(200).send(req.body);
-						});
-					});
-				})
-				.catch(() => {
-					// if course NOT exist
+				if (!result) {
+					// if course doest NOT exist
 					mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(req.body);
 
 					return res.status(200).send(req.body);
+				}
+				// if course exists
+
+				let newCourse = result;
+
+				newCourse.questions.concat(req.body.questions);
+
+				return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").deleteOne({ _id: result._id }).then(() => {
+					return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(newCourse).then(() => {
+						return res.status(200).send(req.body);
+					});
 				});
+			})
 		})
 	})
 
@@ -1004,6 +1004,80 @@ router.route('/course-data')
 			});
 		});
 	});
+
+// add/modify instructors
+router.route('/instructors')
+	.get(auth.authenticateToken, (req, res) => {
+		return mongoConnection.then(() => {
+			return mongoClient.db(dbName).collection("instructor-rankings").find().toArray().then(data => {
+				return res.status(200).send(data);
+			});
+		})
+	})
+	.post(auth.authenticateToken, (req, res) => {
+		// sanitize body 
+		const schema = Joi.object({
+			instructor: Joi.string().trim().required(),
+			course: Joi.string().trim().required()
+		});
+		const result = schema.validate(req.body);
+		if (result.error) return res.status(400).send(result.error);
+
+		// format body
+		req.body.course = req.body.course.trim().toUpperCase();
+
+		// save to database
+		return mongoConnection.then(() => {
+			mongoClient.db(dbName).collection("instructor-rankings").findOne({ instructor: req.body.instructor }).then(result => {
+
+				// add if course does not exist
+				if (!result) {
+					mongoClient.db(dbName).collection("instructor-rankings").insertOne(req.body);
+					return res.status(200).json(req.body);
+				}
+
+				// update existing course 
+				let newInstructor = result;
+				newInstructor.course = req.body.course;
+				mongoClient.db(dbName).collection("instructor-rankings").deleteOne({ _id: result._id }).then(() => {
+					mongoClient.db(dbName).collection("instructor-rankings").insertOne(newInstructor);
+					return res.status(200).json(req.body);
+				});
+			});
+		});
+	})
+
+router.route("/add-instructor")
+	.post(auth.authenticateToken, (req, res) => {
+		// sanitize body 
+		const schema = Joi.object({
+			instructor: Joi.string().trim().required(),
+			email: Joi.string().email().required()
+		});
+		const result = schema.validate(req.body);
+		if (result.error) return res.status(400).send(result.error);
+
+		// save to database
+		return mongoConnection.then(() => {
+			mongoClient.db(dbName).collection("instructor-rankings").findOne({ instructor: req.body.instructor }).then(result => {
+
+				// add if course does not exist
+				if (!result) {
+					mongoClient.db(dbName).collection("instructor-rankings").insertOne(req.body);
+					return res.status(200).json(req.body);
+				}
+
+				// update existing course 
+				let newInstructor = result;
+				newInstructor.email = req.body.email;
+
+				mongoClient.db(dbName).collection("instructor-rankings").deleteOne({ _id: result._id }).then(() => {
+					mongoClient.db(dbName).collection("instructor-rankings").insertOne(newInstructor);
+					return res.status(200).json(req.body);
+				});
+			});
+		});
+	})
 
 // #########
 
