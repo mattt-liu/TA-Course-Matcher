@@ -84,7 +84,7 @@ export class AdjustCoursehoursComponent implements OnInit {
      }
      //handle situation where the course or the TA is not found
      if(found == false) {
-      alert("Sorry a that course was not found")
+      alert("Sorry that course was not found")
      }
 
     }
