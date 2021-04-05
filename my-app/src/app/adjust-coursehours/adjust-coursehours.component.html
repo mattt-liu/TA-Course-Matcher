@@ -1,26 +1,11 @@
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-
 
 <div *ngIf = "courses.length != 0">
+  <h2>Adjust Course Hours</h2>
     <input type="text" id="courseName" placeholder ="Course Name"><br>
     <label for="newCoursehours">Please input the new time requirements for this course:</label><br>
     <input type="text" id="newCoursehours" placeholder ="New Course hours"><br>
     <button (click)= "searchCourse()">Replace hours</button>
 </div>
-
-
-<br>
-<br>
-<br>
 
 <div *ngIf = "courses.length != 0">
     <button (click)= "displayCourse()">Click here to display info for each course</button>

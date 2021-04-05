@@ -10,8 +10,6 @@
       <li><a routerLink="/view-applicants">View Applicants</a></li>
       <li><a routerLink="/view-tas">View TA's</a></li>
       <li><a routerLink="/users">Users</a></li>
-      <li><a routerLink="/adjusthours">Adjust TA hours</a></li>
-      <li><a routerLink="/coursehours">Adjust Course hours</a></li>
       <li class="right" *ngIf="!user"><button (click)="login()">Log In</button></li>
       <li class="right" *ngIf="user"><button (click)="logout()">Log Out</button></li>
     </ul>

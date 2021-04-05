@@ -19,9 +19,7 @@ const routes: Routes = [
   { path: 'view-courses', component: CourseInfoAndQuestionsComponent},
   { path: 'view-tas', component: AdjustTahoursComponent},
   { path: 'view-applicants', component: DepartmentTASelectionComponent },
-  { path: 'users', component: UserAdminComponent },
-  { path: 'adjusthours', component: AdjustTahoursComponent},
-  { path: 'coursehours', component: AdjustCoursehoursComponent}
+  { path: 'users', component: UserAdminComponent }
 ]
 
 @NgModule({

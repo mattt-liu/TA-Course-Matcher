@@ -4,13 +4,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { courseinteface } from './coursehours'
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class courseService {
 
 
-private getcourseurl: string = "http://localhost:3000/api/getcoursehours";
-private postcourseurl: string = "http://localhost:3000/api/replacecoursehours"
+private getcourseurl: string = `${environment.apiUrl}/api/getcoursehours`;
+private postcourseurl: string = `${environment.apiUrl}/api/replacecoursehours`;
 
 constructor(private http: HttpClient) { }
 
@@ -44,6 +45,7 @@ export class AdjustCoursehoursComponent implements OnInit {
   }
 
   displayCourse(){ 
+    this.display = [];
     for (var key in this.courses) {
       this.display.push(this.courses[key])
     }
