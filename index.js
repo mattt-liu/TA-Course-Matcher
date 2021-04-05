@@ -197,7 +197,7 @@ router.route('/add-applicants')
 
 					newApp.appliedCourses[row.ranking - 1] = row.course;
 					newApp.answers[row.ranking - 1] = row.answers;
-					newApp.hours += row.hours;
+					newApp.hours = row.hours;
 
 					combinedApps[index] = newApp;
 				}
