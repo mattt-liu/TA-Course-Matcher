@@ -9,7 +9,8 @@
 <div>
     <table class = "Searchresults" *ngFor = "let i of infoArray"> 
       <tr> 
-        <th>Course</th>
+        <th>Name</th>
+        <th>Code</th>
         <!--<th>Qualifications:</th> -->
         <th>Requires TAs</th>
         <th>TA Hours</th>
@@ -19,6 +20,7 @@
         <th>Sections</th>
       </tr>
       <tr> 
+        <td>{{i.name}}</td>
         <td>{{i.course}}</td>
         <!--<td>{{i.qualifications}}</td> -->
         <td>{{i.requires}}</td>

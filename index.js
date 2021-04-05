@@ -1006,7 +1006,7 @@ router.route('/course-data')
 		// format body
 		if (!req.body.labHours) req.body.labHours = 0;
 		req.body.course = req.body.course.trim().toUpperCase();
-		req.body.name = req.body.course.trim().toUpperCase();
+		req.body.name = req.body.name.trim().toUpperCase();
 
 		return mongoConnection.then(() => {
 			mongoClient.db(dbName).collection("courses").findOne({ course: req.body.course }).then(result => {
