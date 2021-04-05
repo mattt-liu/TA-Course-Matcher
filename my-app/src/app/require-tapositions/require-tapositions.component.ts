@@ -5,13 +5,14 @@ import { Observable } from 'rxjs';
 import { courses } from './needsTAs';
 import { questions } from '../course-info-and-questions/questions';
 import { applicant } from '../applicant-information/applicants';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class ConfigService {
 
-private linkstring: string = "http://localhost:3000/api/getcourses";
-private linkstring1: string = "http://localhost:3000/api/getquestions";
-private linkstring2: string = "http://localhost:3000/api/getapplicants";
+private linkstring: string = `${environment.apiUrl}/api/getcourses`;
+private linkstring1: string = `${environment.apiUrl}/api/getquestions`;
+private linkstring2: string = `${environment.apiUrl}/api/getapplicants`;
 
 constructor(private http: HttpClient) { }
 

@@ -3,14 +3,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TA } from './TAhours';
+import { environment } from '../../environments/environment';
 
 
 @Injectable()
 export class TAservice {
 
 
-private getTAstring: string = "http://localhost:3000/api/getTAhours";
-private postTAstring: string = "http://localhost:3000/api/replaceTAhours"
+private getTAstring: string = `${environment.apiUrl}/api/getTAhours`;
+private postTAstring: string = `${environment.apiUrl}/api/replaceTAhours`;
 
 constructor(private http: HttpClient) { }
 
