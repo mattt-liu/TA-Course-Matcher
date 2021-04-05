@@ -39,25 +39,15 @@ router.route('/test')
 router.route('/getcourses')
 	.get((req, res) => {
 		return mongoConnection.then(() => {
-
-			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
-
-			// return promise that checks if that course exists
-			return new Promise((resolve, reject) => {
-				let courses = [];
-				collection.forEach(e => {
-					if (e.requires) {
-						courses.push(e)
-					}
-				},
-					() => {
-						collection.close();
-						resolve(courses);
-					});
+			return mongoClient.db(dbName).collection("courses").find().toArray().then((result) => {
+				let newResults = []
+				// remove "_id" property
+				for (let r of result) {
+					r._id = undefined;
+					newResults.push(r);
+				}
+				return res.status(200).send(newResults);
 			})
-				.then((result) => {
-					return res.status(200).send(result);
-				})
 		})
 	})
 	// change if a course "requires" TA's
@@ -70,7 +60,7 @@ router.route('/getcourses')
 			requires: Joi.bool().required()
 		});
 		let result = schema.validate(req.body);
-		if (result.error) return res.status(400).send(result.error); 
+		if (result.error) return res.status(400).send(result.error);
 		req.body.course = req.body.course.toUpperCase();
 
 		return mongoConnection.then(() => {
@@ -169,7 +159,7 @@ router.route('/courses-ml')
 				// if course exists
 
 				let newCourse = result;
-				
+
 				// don't add duplicate questions
 				let noDuplicates = []
 				for (let q of req.body.questions) {
