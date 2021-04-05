@@ -27,7 +27,8 @@ import { UserAdminComponent } from './user-admin/user-admin.component';
 import { UploadEnrollmentComponent } from './upload-enrollment/upload-enrollment.component';
 import { UploadCourseSetupComponent } from './upload-course-setup/upload-course-setup.component';
 import { UploadUserComponent } from './upload-user/upload-user.component';
-import { ExportCourseComponent } from './export-course/export-course.component'
+import { ExportCourseComponent } from './export-course/export-course.component';
+import { HomeComponent } from './home/home.component'
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { ExportCourseComponent } from './export-course/export-course.component'
     UploadEnrollmentComponent,
     UploadCourseSetupComponent,
     UploadUserComponent,
-    ExportCourseComponent
+    ExportCourseComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

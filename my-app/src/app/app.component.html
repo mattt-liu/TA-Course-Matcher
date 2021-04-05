@@ -10,8 +10,8 @@
       <li><a routerLink="/view-applicants">View Applicants</a></li>
       <li><a routerLink="/view-tas">View TA's</a></li>
       <li><a routerLink="/users">Users</a></li>
-      <li *ngIf="!user"><button (click)="login()">Log In</button></li>
-      <li *ngIf="user"><button (click)="logout()">Log Out</button></li>
+      <li class="right" *ngIf="!user"><button (click)="login()">Log In</button></li>
+      <li class="right" *ngIf="user"><button (click)="logout()">Log Out</button></li>
     </ul>
   </nav>
 </div>
@@ -19,10 +19,10 @@
   <h2>Welcome {{user.email}}</h2>
 </div>
 <div *ngIf="!user && showlogin">
-  <h1>Welcome</h1>
   <app-log-in></app-log-in>
 </div>
-<div style="position: relative; height: 100%; margin: 0 auto; margin-top: 25px; padding: 25px 0 25px 0; width: 75%; margin-bottom: 50px;">
+<div
+  style="position: relative; height: 100%; margin: 0 auto; margin-top: 25px; padding: 25px 0 25px 0; width: 75%; margin-bottom: 50px;">
   <router-outlet></router-outlet>
 </div>
 <div class='copy'>
@@ -98,5 +98,10 @@
     text-align: center;
     color: white;
     background: indigo;
+  }
+
+  .right {
+    position: absolute;
+    right: 0px;
   }
 </style>
