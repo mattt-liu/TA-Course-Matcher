@@ -22,6 +22,8 @@ import { LogInComponent } from './log-in/log-in.component';
 import { SignupComponent } from './signup/signup.component';
 import { AdjustTahoursComponent } from './adjust-tahours/adjust-tahours.component';
 import { TAservice } from './adjust-tahours/adjust-tahours.component';
+import { AdjustCoursehoursComponent } from './adjust-coursehours/adjust-coursehours.component';
+import { courseService } from './adjust-coursehours/adjust-coursehours.component'
 
 @NgModule({
   declarations: [
@@ -38,7 +40,8 @@ import { TAservice } from './adjust-tahours/adjust-tahours.component';
     UploadRankingsComponent,
     LogInComponent,
     SignupComponent,
-    AdjustTahoursComponent
+    AdjustTahoursComponent,
+    AdjustCoursehoursComponent
   ],
   imports: [
     BrowserModule,
@@ -50,6 +53,7 @@ import { TAservice } from './adjust-tahours/adjust-tahours.component';
   providers: [
     ConfigService,
     TAservice,
+    courseService,
   ],
   bootstrap: [AppComponent]
 })

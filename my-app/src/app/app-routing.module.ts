@@ -9,6 +9,7 @@ import { TAApplyAndRankComponent } from './ta-apply-and-rank/ta-apply-and-rank.c
 import { DepartmentTASelectionComponent } from './department-ta-selection/department-ta-selection.component';
 import { UploadApplicantComponent } from './upload-applicant/upload-applicant.component';
 import { AdjustTahoursComponent } from './adjust-tahours/adjust-tahours.component';
+import { AdjustCoursehoursComponent } from './adjust-coursehours/adjust-coursehours.component';
 
 const routes: Routes = [
   { path: 'questions', component: QuestionsMlComponent },
@@ -19,7 +20,8 @@ const routes: Routes = [
   { path: 'ta-apply-and-rank', component: TAApplyAndRankComponent },
   { path: 'ece-ta-selection', component: DepartmentTASelectionComponent },
   { path: 'Info', component: CourseInfoAndQuestionsComponent},
-  { path: 'adjusthours', component: AdjustTahoursComponent}
+  { path: 'adjusthours', component: AdjustTahoursComponent},
+  { path: 'coursehours', component: AdjustCoursehoursComponent}
 ]
 
 @NgModule({

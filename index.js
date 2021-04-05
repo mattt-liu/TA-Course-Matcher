@@ -895,7 +895,6 @@ router.route('/getapplicants') //Get the applicants and their answers to each qu
 
 	
 	//get TA Hours
-
 	router.route('/getTAhours')
 	.get((req, res) => {
 		return mongoClient.connect().then(() => {
@@ -920,6 +919,79 @@ router.route('/getapplicants') //Get the applicants and their answers to each qu
 				})
 		})
 	});
+
+
+	//post course hours
+	router.route('/replacecoursehours')
+	.post((req, res) => {
+		
+		const schema = Joi.object({
+			course: Joi.string().trim().required(),
+			hours: Joi.number().required(),
+		});
+		const result = schema.validate(req.body);
+		if (result.error) return res.status(400).send(result.error); //.error.details[0].message)
+		return mongoClient.connect().then(() => {
+			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
+
+			// return promise that checks if that course exists
+			return new Promise((resolve, reject) => {
+
+				collection.forEach(e => {
+					if (e.course.toLowerCase() === req.body.course.toLowerCase()) {
+						resolve(e);
+					}
+				},
+					() => {
+						collection.close();
+						reject();
+					});
+			})
+				.then((result) => {
+					// if TA exists
+					let newcourse = result;
+					newcourse.hours = req.body.hours;
+					return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").deleteOne({ _id: result._id }).then(() => {
+						return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(newcourse).then(() => {
+							return res.status(200).send(req.body);
+						});
+					});})
+				.catch(() => {
+					// if course does NOT exist
+					res.status(404).send('Not found');
+				});
+		})
+	})
+
+
+	//get course Hours
+	router.route('/getcoursehours')
+	.get((req, res) => {
+		return mongoClient.connect().then(() => {
+
+			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
+	
+			return new Promise((resolve, reject) => {
+				let courses = [];
+				collection.forEach(e => {
+					
+					courses.push(e)
+					
+				},
+					() => {
+						collection.close();
+						resolve(courses);
+					});
+			})
+				.then((result) => {
+					return res.status(200).send(result)
+				})
+		})
+	});
+
+
+
+	
 
 
 
