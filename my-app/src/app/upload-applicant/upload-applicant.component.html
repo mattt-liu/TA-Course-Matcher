@@ -1,19 +1,24 @@
-<h1>Upload Applicant Input</h1>
-<input type="file" #fileImportInput name="File Upload" id="csvFileUpload" (change)="fileListener($event)"
-    accept=".csv" />
-<div *ngIf="csvError" style="color: red;">
-    <p>Wrong file format!</p>
+<div *ngIf="user">
+    <h1>Upload Applicant Input</h1>
+    <input type="file" #fileImportInput name="File Upload" id="csvFileUpload" (change)="fileListener($event)"
+        accept=".csv" />
+    <div *ngIf="csvError" style="color: red;">
+        <p>Wrong file format!</p>
+    </div>
+    <div *ngIf="data">
+        <h2>Preview:</h2>
+        <p *ngFor="let row of data.slice(1)">
+            <span *ngFor="let d of row.slice(0)">{{d}} </span>
+        </p>
+        <button (click)="saveData()">Submit</button>
+    </div>
+    <div>
+        <app-upload-enrollment></app-upload-enrollment>
+    </div>
+    <div style="margin-top: 25px">
+        <app-upload-course-setup></app-upload-course-setup>
+    </div>
 </div>
-<div *ngIf="data">
-    <h2>Preview:</h2>
-    <p *ngFor="let row of data.slice(1)">
-        <span *ngFor="let d of row.slice(0)">{{d}} </span>
-    </p>
-    <button (click)="saveData()">Submit</button>
-</div>
-<div>
-    <app-upload-enrollment></app-upload-enrollment>
-</div>
-<div style="margin-top: 25px">
-    <app-upload-course-setup></app-upload-course-setup>
+<div *ngIf="!user">
+    <h1>Please Login!</h1>
 </div>

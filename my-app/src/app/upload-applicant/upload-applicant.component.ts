@@ -3,6 +3,7 @@ import { ViewChild } from '@angular/core';
 import { NgxCsvParser, NgxCSVParserError } from 'ngx-csv-parser';
 import { UploadApplicantService } from '../upload-applicant.service';
 import { QuestionsService } from '../questions.service';
+import { AppComponent } from '../app.component';
 
 @Component({
 	selector: 'app-upload-applicant',
@@ -13,16 +14,21 @@ export class UploadApplicantComponent implements OnInit {
 
 	data: any[];
 	csvError: boolean = false;
+	user = undefined;
 
 	constructor(
 		private csvParser: NgxCsvParser,
 		private uploadService: UploadApplicantService,
-		private qService: QuestionsService
+		private qService: QuestionsService,
+		private appComp: AppComponent
 		) { }
 
 	@ViewChild('fileImportInput', { static: false }) fileImportInput: any;
 
 	ngOnInit(): void {
+		this.appComp.getUser().then(data => {
+			this.user = data;
+		});
 	}
 
 	fileListener($event: any): void {
