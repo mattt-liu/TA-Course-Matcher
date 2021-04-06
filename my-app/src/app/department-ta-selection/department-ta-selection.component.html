@@ -8,7 +8,8 @@
         <td class="leftInnerTableTd">
             <div class="innerTableDiv">
                 <!-- table displaying a list of courses the ECE members can select one from to view the rankings and assign a TA-->
-                <h2>Course List</h2>
+
+                <h1>Course List</h1>
                 <table class="subTables">
                     <tr>
                         <td class="tdWithBorder">Course Code</td>
@@ -18,8 +19,8 @@
                     </tr>
 
                     <!-- looping through courses data and rendering row for each course -->
-                    <tr *ngFor="let course of courseData" (click)="courseSelected(course.course)">
-                        <td class="tdWithBorder"> {{ course.course }} </td>
+                    <tr *ngFor="let course of courseData" (click)="courseSelected(course)">
+                        <td class="courseLabel"> {{ course.course }} </td>
                         <td class="tdWithBorder"> {{ course.hours }} </td>
                         <td class="tdWithBorder"> {{ course.requires }} </td>
                     </tr>
@@ -27,8 +28,8 @@
             </div>
         </td>
         <td class="rightInnerTableTd">
-            <div class="innerTableDiv">
-                <h2>{{ this.selectedCourse }} TA Selection</h2>
+            <div class="innerTableDiv" style="margin-top: 250px;">
+                <h2><u>{{ this.selectedCourse }} TA Selection</u></h2>
 
                 <!-- Sub tables displaing the professor and TA rankings for each course-->
                 <table>
@@ -43,7 +44,7 @@
                                     </tr>
 
                                     <tr *ngFor="let ta of this.instructorRankings" (click)="this.taSelected(ta.name)">
-                                        <td class="tdWithBorder">{{ ta.name }}</td>
+                                        <td class="courseLabel">{{ ta.name }}</td>
                                         <td class="tdWithBorder">{{ ta.hoursLeft }}</td>
                                         <td style="white-space: nowrap; overflow: visible;" *ngIf="ta.name == this.selectedTaName"> <h1>→</h1> </td>
                                     </tr>
@@ -75,7 +76,7 @@
                             </ng-container>
                         </td>
                     </tr>
-
+                    <tr><div style="height: 50px;"></div></tr>
                     <!-- section below the two sub tables: select a TA for said course -->
                     <tr>
                         <td style="column-span: 2;">
@@ -92,7 +93,8 @@
                                     <td style="width: 5%; text-align: center;"><h2>OR</h2></td>
                                        
                                     <td style="height: 10%; width: 20%;">
-                                        <button (click)="alternativeApplicant = !alternativeApplicant">Enter alternative applicant</button>
+
+                                        <button (click)="alternativeApplicant = !alternativeApplicant; applicantSelected = true;">Enter alternative applicant</button>
                                         <ng-container *ngIf="alternativeApplicant">
                                             <select id="taSelection" [(ngModel)]="this.selectedApplicant">
                                                 <option *ngFor="let applicant of this.instructorRankings" [value]="applicant.name">{{ applicant.name }}</option>

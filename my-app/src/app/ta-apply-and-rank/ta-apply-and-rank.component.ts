@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { CoursesService } from '../courses.service';
+import { QuestionsService } from '../questions.service';
 
 @Component({
   selector: 'app-ta-apply-and-rank',
@@ -7,12 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TAApplyAndRankComponent implements OnInit {
 
-  constructor() { }
+  constructor(private CoursesService: CoursesService, private qService: QuestionsService) { }
 
   ngOnInit(): void {
+    this.getCourses();
   }
 
-  // dummy data
+  courseData; // course data to be rendered into the table
+  
+
+  /* dummy data
     notAppliedCourseList = { 
       se3313: { questions: ["question 1", "question2", "question3"],
                 hours: 24,
@@ -34,9 +40,27 @@ export class TAApplyAndRankComponent implements OnInit {
                  hours: 20,
       }
     }; 
+  */
 
+  courseRowSelected(course){
+    this.courseData.course.expanded = true;
+  }
+ 
   getCourses(){
     // fetch list of courses
+    this.CoursesService.getCourseData().subscribe( (data) => {
+      this.courseData = data;
+
+      for(let i of this.courseData){
+        i.expanded = false;
+      };
+
+      console.log(data);
+    });
+  }
+
+  getCourseQuestions(){
+
   }
 
   selectCourse(){

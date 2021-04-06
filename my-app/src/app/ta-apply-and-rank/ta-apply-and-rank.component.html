@@ -1,30 +1,36 @@
-<br>
-<br>
-<br>
-<h2>Courses to Apply</h2>
+
+<h1 style="color: indigo; font-weight: 800;">TA Apply and Rank Section</h1>
+
+<h2>Courses to Apply to</h2>
 <table>
     <tr>
         <td>
-            this is a column
+            Course
         </td>
         <td>
-            this is a column
+            Course Hours Required
+        </td>
+        <td>
+            Have applied
+        </td>
+        <td>
+            Current Rank
         </td>
     </tr>
+    <ng-container *ngFor="let course of this.courseData">
+        <tr>
+            <td (click)="courseRowSelected(course)">{{ course.course }}</td>
+            <td (click)="courseRowSelected(course)">{{ course.hours }}</td>
+            <!-- <td (click)="courseRowSelected(course)" >{{ course.course }}</td> if they have applied -->
+            <td> <select></select> </td> <!-- show only IF they have applied -->
+        </tr>
+        <tr *ngIf="course.expanded == true">
+            <h2> Apply to {{ course.course }} </h2>
+            <!-- course apply section -->
+            <!-- display message if they have already applied -->
+        </tr>
+    </ng-container>
 </table>
-
-<h2>Coruse Rankings</h2>
-<table>
-    <tr>
-        <td>
-            this is a column
-        </td>
-        <td>
-            this is a column
-        </td>
-    </tr>
-</table>
-
 
 <button (click)="submitRankings()">Submit Rankings</button>
 <app-upload-applicant></app-upload-applicant>
