@@ -39,4 +39,15 @@ export class AppComponent implements OnInit {
 		this.user = undefined;
         setTimeout(() => window.location.reload(), 100);
 	}
+
+	public getUser() {
+		return new Promise((resolve, reject) => {
+			if (!localStorage.getItem('token')) resolve(undefined);
+			this.userService.getEmail().subscribe(data => {
+				resolve(data);
+			}, err => {
+				reject(err);
+			});
+		})
+	}
 }
