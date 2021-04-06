@@ -31,6 +31,9 @@ export class DepartmentTASelectionComponent implements OnInit {
   selectedApplicant; // either set to the default bestApplicant or to the applicant chosen from the dropdown if alternativeApplicant is true
   applicantSelected = false; // becomes true once the user clikcs the "choose this applicant" or "enter alternative applicant" button
   selectedCourseHours; // the number of TA hours required to be assigned to the selected course
+  assignedHours;
+  assignedTAs = [];
+  assignmentComplete = false;
 
 
   // rankings arrays
@@ -39,6 +42,12 @@ export class DepartmentTASelectionComponent implements OnInit {
     taRankings = [];    // format = [ {ta: "name", rankedThisCourse: 1}, ... ]
 
   courseSelected(course){
+
+    // resetting TA variables and data
+      this.assignmentComplete = false;
+      this.assignedHours = {};
+      this.assignedTAs = [];
+      
     let courseCode = course.course
     this.selectedCourse = courseCode;
     this.selectedCourseHours = course.hours;
@@ -162,7 +171,8 @@ export class DepartmentTASelectionComponent implements OnInit {
 
     // todo now adjusting weight based on TA and course Hours
     // let sleectedCourseHours = ?  <-- need to get this from thew formula
-    let selectedCourseHours = 15; //this.selectedCourseHours;
+    //let selectedCourseHours = 15; 
+    let selectedCourseHours = this.selectedCourseHours;
     console.log("Selected course hours: " + selectedCourseHours);
 
     // here is also where we split the TA hours among multiple TAs ?
@@ -187,17 +197,29 @@ export class DepartmentTASelectionComponent implements OnInit {
 
           for(let i of instructorRankings){  // adding 4 weight if the TA has the exact number of hours to fulfill the course
             if(i.hoursLeft == remainingCourseHours){
+              console.log(i.name + " weight increased by 4; exact number of hours");
               weightData[i.name] += 4;
             }
           }
             
           // finding the next best applicant that has not already been assigned hours
 
-            for(let i of Object.keys(weightData)){  
+          quickBreak: for(let i of Object.keys(weightData)){  
 
-              if(weightData[i] > highestWeight && (!Object.keys(assignedHours).includes(i)) ){  // also check if the "highest weighted applicant" has already been assigned hours (since we looping through)
+              // skip applicants that have no hours left TODO apply this in other places
+
+                for(let x of instructorRankings){
+                  if(x.hoursLeft == 0 && x.name == i){
+                    continue quickBreak;
+                  }
+                }
+
+              if(weightData[i] > highestWeight && (!Object.keys(assignedHours).includes(i))){  // also check if the "highest weighted applicant" has already been assigned hours (since we looping through)
                 highestWeight = weightData[i];
                 bestApplicant = i;
+              }
+              else if(weightData[i] == highestWeight){
+                console.log("equal weights; brokem");
               }
             }
 
@@ -209,6 +231,7 @@ export class DepartmentTASelectionComponent implements OnInit {
                     if(applicant.name == bestApplicant){
                       assignedHours[bestApplicant] = applicant.hoursLeft; // todo fix backend to get hours specific to course; this doesnt work rn
                       remainingCourseHours -= applicant.hoursLeft;
+                      console.log(weightData);
                       console.log(applicant.hoursLeft + " hours assigned to " + bestApplicant + "\n remaining course hours: " + remainingCourseHours);
                       applicant.hoursLeft = 0;    // this sets it to zero yea? pass by reference? todo verify
                     }
@@ -249,6 +272,7 @@ export class DepartmentTASelectionComponent implements OnInit {
 
               // now assign the TA the remaining course hours (will be one or more less than what they wanted)
                 assignedHours[bestApplicant] = remainingCourseHours;
+                console.log(weightData);
                 console.log(remainingCourseHours + " hours assigned to " + bestApplicant + "\n remaining course hours: 0");
                 remainingCourseHours = 0;
               
@@ -296,6 +320,7 @@ export class DepartmentTASelectionComponent implements OnInit {
                     }
                     // and now assigning them
                       assignedHours[bestApplicant] = remainingCourseHours;
+                      console.log(weightData);
                       console.log(remainingCourseHours + " hours assigned to " + bestApplicant + "\n remaining course hours: 0");
                       remainingCourseHours = 0;
                       
@@ -305,12 +330,13 @@ export class DepartmentTASelectionComponent implements OnInit {
                           i.hoursLeft -= remainingCourseHours;
                         }
                       }
+                      break outerLoop;
                   }
 
                   // todo do something when fitting TAs length is zero?
-                  console.log("fitting TAs array length zero;")
+                  console.log("fitting TAs array length zero; assigning TA with non-exact hours");
                 }
-                else {
+                // else {
                   // else continue on and assign a TA with more than 5 hours
 
                       for(let i of instructorRankings){
@@ -336,6 +362,7 @@ export class DepartmentTASelectionComponent implements OnInit {
 
                     // now assign the TA said amount of hours
                       assignedHours[bestApplicant] = remainingCourseHours;
+                      console.log(weightData);
                       console.log(remainingCourseHours + " hours assigned to " + bestApplicant + "\n remaining course hours: 0");
                       remainingCourseHours = 0;
 
@@ -345,21 +372,21 @@ export class DepartmentTASelectionComponent implements OnInit {
                           i.hoursLeft -= remainingCourseHours;
                         }
                       }
-                }
-              console.log("the course has now been fully assigned");
+                //}
               break outerLoop;
             }
           // else reloop and assign another TA, then repeat
       }
-      
+      console.log("the course has now been fully assigned");
+      this.assignedHours = assignedHours;
+      this.assignmentComplete = false;
+
+      for(let i of Object.keys(this.assignedHours)){
+        this.assignedTAs.push(i)
+      }
+
+      console.log(this.assignedHours);
       console.log("assigned TAs");
-
-      // TODO big assignment "plan" that considers all courses and TAs at the same time rather than one at a time? More ""
-      // TODO show "this course has been fully assigned" message if so. API returns error for this so we'd need to catch it and show the messsage. 
-      // ^Could also link to other component so that the hours can be adjusted manually
-
-      //console.log("highest ranked applicant: " + highestApplicant);
-      //this.bestApplicant = highestApplicant;
   }
 
   checkTAs(assignedHours){
@@ -376,27 +403,25 @@ export class DepartmentTASelectionComponent implements OnInit {
   // asssign the suggested applicant to the TA for this class
   assignSuggestedApplicant(){
     this.applicantSelected = true;
-    this.alternativeApplicant = false;
-    let hours = (document.getElementById("taAssignmentHours") as HTMLInputElement).value; 
-    let selectedTA = this.bestApplicant;
-
-    // todo verify input is an int 
-    if(hours == undefined){
-      alert("please enter an integer number of hours to assign to the selected TA");
-    }
-
-    let assignmentData = {
-      name: selectedTA,
-      hours: +hours,
-    };
+    //this.alternativeApplicant = false;
+    let taHours = this.assignedHours;    
 
     // assign the number of hours to the chosen TA
-    this.CoursesService.assignInstructoryRankings(this.selectedCourse, assignmentData).subscribe( (response) => {
-      console.log(response);
-      if(response === "Applicant already assigned!"){
-        alert(response);
-      }
-    });
+    for(let applicant of Object.keys(taHours)){
+
+      let assignmentData = {
+        name: applicant,
+        hours: +taHours[applicant],
+      };
+
+      this.CoursesService.assignInstructoryRankings(this.selectedCourse, assignmentData).subscribe( (response) => {
+        console.log(response);
+        if(response === "Applicant already assigned!"){
+          alert(response);
+        }
+      });
+    }
+    this.assignmentComplete = true;
 
   }
 }

@@ -79,19 +79,26 @@
                     <tr><div style="height: 50px;"></div></tr>
                     <!-- section below the two sub tables: select a TA for said course -->
                     <tr>
-                        <td style="column-span: 2;">
+                        <td style="column-span: 2;" *ngIf="selectedCourseHours != 0">
                             <table>
                                 <tr>
                                     <td>
-                                        <h2>Suggested Applicant for {{ this.selectedCourse }}: {{ this.bestApplicant }}</h2>
+                                        <h2>Suggested Hours Assignment for {{ this.selectedCourse }} :</h2>
                                     </td>
+                                    <ul *ngIf="assignmentComplete == false">
+                                        <li *ngFor="let applicant of assignedTAs">{{ applicant }}: {{ this.assignedHours[applicant] }} hours</li>
+                                    </ul>
+                                    <p style="color: red;" *ngIf="assignmentComplete">The assignments have been applied.</p>
+
                                 </tr>
                                 <tr>
                                     <td style="width: 10%;">
-                                        <button (click)="assignSuggestedApplicant()">Choose this applicant</button>
+                                        <button (click)="assignSuggestedApplicant()">Apply this assignent plan</button>
+                                        <!--<p>Note that after hours have been assigned, their assigned hours can be manually edited</p>-->
                                     </td>
-                                    <td style="width: 5%; text-align: center;"><h2>OR</h2></td>
+                                    <!--<td style="width: 5%; text-align: center;"><h2>OR</h2></td> -->
                                        
+                                    <!-- removed 
                                     <td style="height: 10%; width: 20%;">
 
                                         <button (click)="alternativeApplicant = !alternativeApplicant; applicantSelected = true;">Enter alternative applicant</button>
@@ -100,12 +107,16 @@
                                                 <option *ngFor="let applicant of this.instructorRankings" [value]="applicant.name">{{ applicant.name }}</option>
                                             </select>
                                         </ng-container>
-                                    </td>
+                                    </td> -->
                                 </tr>
                             </table>
                         </td>
+                        <td>
+                            <p *ngIf="selectedCourseHours == 0" style="background: #ffcccb; color: black;">This course has no hours left to be assigned</p>
+                        </td>
                     </tr>
 
+                    <!-- removed 
                     <ng-container *ngIf="applicantSelected">
                         <ng-container *ngIf="!alternativeApplicant">
                             Number of hours to assign {{ this.bestApplicant }}
@@ -119,6 +130,7 @@
                         <br/>
                         <button (click)="assignTA()">Submit Selection</button>
                     </ng-container>
+                    -->
                 </table>
             </div>
         </td>
