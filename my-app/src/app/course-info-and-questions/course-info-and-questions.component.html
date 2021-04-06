@@ -42,12 +42,12 @@
     </table>
 </div>
 
-<div *ngIf="selectedCourse">
+<div *ngIf="selectedCourse" style="padding-bottom: 25px;">
   <h2 style="margin-top: 25px;">Edit Course: {{selectedCourse.course}}</h2>
   <div>
     <input type="checkbox" [(ngModel)]="selectedCourse.requires" (click)="changeCourse()"><label>Requires TA positions</label>
   </div>
-  <div>
+  <div style="margin-bottom: 50px; padding-bottom: 50px;">
     <h3>Add a question</h3>
     <input id="question-input" placeholder="Enter a question" size="50">
     <br><button (click)="submitQuestion()">Submit</button><button (click)="cancel()">Cancel</button>
