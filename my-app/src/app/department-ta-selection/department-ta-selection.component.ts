@@ -153,7 +153,7 @@ export class DepartmentTASelectionComponent implements OnInit {
         // give no additional weight is status == 3
       }
     
-    console.log(weightData);
+    // console.log(weightData);
 
     // adjusting the weights based on the TA rankings now
     
@@ -344,7 +344,7 @@ export class DepartmentTASelectionComponent implements OnInit {
                           // console.log(i);
                           
                           if(i.hoursLeft < remainingCourseHours){ // TODO do check at end if there is still no TA assigned (none with more hours but that could be assigned, assign one with less than the number of hours? or just leave it and don;t assign a TA?)
-                            console.log(i.name + " has less than " + remainingCourseHours + " hours left, skipping");
+                            // console.log(i.name + " has less than " + remainingCourseHours + " hours left, skipping");
                             continue;
                           }
 
