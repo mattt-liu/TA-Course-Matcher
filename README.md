@@ -2,7 +2,7 @@
 This web app is designed for instructors and department chair to use. It allows for a seamless TA application process that requires no interaction from the applicants. The app allows for file uploads that will automatically parse the data and produce a recommended applicant for each course.
 
 ## About
-The app uses the MEAN technology stack and multiple different Node packages.
+The app uses the MEAN technology stack and multiple different Node packages. For more information ask the contributors for documentation.
 
 ## System Requirements
 
