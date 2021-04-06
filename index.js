@@ -12,9 +12,15 @@ const app = express();
 const router = express.Router();
 const port = 3000;
 
-app.use(express.json());
-app.use('/', express.static('static'));
 app.use(cors());
+app.use(express.json());
+app.use(express.static('static'));
+app.use('/upload', express.static('static'));
+app.use('/view-courses', express.static('static'));
+app.use('/view-applicants', express.static('static'));
+app.use('/view-tas', express.static('static'));
+app.use('/users', express.static('static'));
+app.use('/api', router);
 
 const uri = "mongodb+srv://node:" + process.env.DB_PASSWORD_SECRET + "@uwo-se.0zbtu.mongodb.net/SE3350-TA-Course-Matching?retryWrites=true&w=majority";
 const mongoClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -1161,7 +1167,5 @@ router.route('/getcoursehours')
 });
 
 // #########
-
-app.use('/api', router);
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
