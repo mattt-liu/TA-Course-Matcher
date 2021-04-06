@@ -657,6 +657,7 @@ router.route('/instructor-rankings/:course')
 
 								let appHoursLeft = []
 								for (let i = 0; i < appTotHours.length; i++) {
+									if (!appTotHours[i]) continue;
 									let p = new Promise((resolve, reject) => {
 										if (appHours[i]) {
 											let hoursAlreadyUsed = 0;
@@ -803,6 +804,38 @@ router.route('/instructor-rankings/:course')
 					})
 						.catch(() => res.status(400).send("Course is fully assigned!"));
 				})
+			})
+		})
+	})
+
+router.route('/course-rankings')
+	.post(auth.authenticateToken, (req, res) => {
+
+		const schema = Joi.object({
+			course: Joi.string().trim().max(64).required(),
+			rankings: Joi.array().items(Joi.string()).required()
+		});
+		const result = schema.validate(req.body);
+		if (result.error) return res.status(400).send(result.error);
+
+		req.body.course = req.body.course.toUpperCase();
+
+
+		return mongoConnection.then(() => {
+			return mongoClient.db(dbName).collection("instructor-rankings").findOne({ course: req.body.course }).then((result) => {
+				if (!result) {
+					// if course doest NOT exist
+					mongoClient.db(dbName).collection("instructor-rankings").insertOne(req.body);
+					return res.status(200).send(req.body);
+				}
+				// if course exists
+				let newCourse = result;
+				newCourse.rankings = req.body.rankings;
+				return mongoClient.db(dbName).collection("instructor-rankings").deleteOne({ _id: result._id }).then(() => {
+					return mongoClient.db(dbName).collection("instructor-rankings").insertOne(newCourse).then(() => {
+						return res.status(200).send(req.body);
+					});
+				});
 			})
 		})
 	})
@@ -1098,73 +1131,74 @@ router.route("/add-instructor")
 		});
 	})
 
-	//post course hours
+//post course hours
 router.route('/replacecoursehours')
-.post(auth.authenticateToken, (req, res) => {
-	
-	const schema = Joi.object({
-		course: Joi.string().trim().required(),
-		hours: Joi.number().required(),
-	});
-	const result = schema.validate(req.body);
-	if (result.error) return res.status(400).send(result.error); //.error.details[0].message)
-	return mongoConnection().then(() => {
-		let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
+	.post(auth.authenticateToken, (req, res) => {
 
-		// return promise that checks if that course exists
-		return new Promise((resolve, reject) => {
+		const schema = Joi.object({
+			course: Joi.string().trim().required(),
+			hours: Joi.number().required(),
+		});
+		const result = schema.validate(req.body);
+		if (result.error) return res.status(400).send(result.error); //.error.details[0].message)
+		return mongoConnection().then(() => {
+			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
 
-			collection.forEach(e => {
-				if (e.course.toLowerCase() === req.body.course.toLowerCase()) {
-					resolve(e);
-				}
-			},
-				() => {
-					collection.close();
-					reject();
+			// return promise that checks if that course exists
+			return new Promise((resolve, reject) => {
+
+				collection.forEach(e => {
+					if (e.course.toLowerCase() === req.body.course.toLowerCase()) {
+						resolve(e);
+					}
+				},
+					() => {
+						collection.close();
+						reject();
+					});
+			})
+				.then((result) => {
+					// if TA exists
+					let newcourse = result;
+					newcourse.hours = req.body.hours;
+					return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").deleteOne({ _id: result._id }).then(() => {
+						return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(newcourse).then(() => {
+							return res.status(200).send(req.body);
+						});
+					});
+				})
+				.catch(() => {
+					// if course does NOT exist
+					res.status(404).send('Not found');
 				});
 		})
-			.then((result) => {
-				// if TA exists
-				let newcourse = result;
-				newcourse.hours = req.body.hours;
-				return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").deleteOne({ _id: result._id }).then(() => {
-					return mongoClient.db("SE3350-TA-Course-Matching").collection("courses").insertOne(newcourse).then(() => {
-						return res.status(200).send(req.body);
-					});
-				});})
-			.catch(() => {
-				// if course does NOT exist
-				res.status(404).send('Not found');
-			});
 	})
-})
 
 
 //get course Hours
 router.route('/getcoursehours')
-.get(auth.authenticateToken, (req, res) => {
-	return mongoConnection.then(() => {
+	.get(auth.authenticateToken, (req, res) => {
+		return mongoConnection.then(() => {
 
-		let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
+			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
 
-		return new Promise((resolve, reject) => {
-			let courses = [];
-			collection.forEach(e => {
-				
-				courses.push(e)
-				
-			},
-				() => {
-					collection.close();
-					resolve(courses);
-				});
-		})
-			.then((result) => {
-				return res.status(200).send(result)
+			return new Promise((resolve, reject) => {
+				let courses = [];
+				collection.forEach(e => {
+
+					courses.push(e)
+
+				},
+					() => {
+						collection.close();
+						resolve(courses);
+					});
 			})
-	})
-});
+				.then((result) => {
+					return res.status(200).send(result)
+				})
+		})
+	});
 
 // #########
 
