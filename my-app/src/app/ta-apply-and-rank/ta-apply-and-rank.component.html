@@ -1,37 +1,32 @@
 
-<h1 style="color: indigo; font-weight: 800;">TA Apply and Rank Section</h1>
-
-<h2>Courses to Apply to</h2>
-<table>
-    <tr>
-        <td>
-            Course
-        </td>
-        <td>
-            Course Hours Required
-        </td>
-        <td>
-            Have applied
-        </td>
-        <td>
-            Current Rank
-        </td>
-    </tr>
-    <ng-container *ngFor="let course of this.courseData">
-        <tr>
-            <td (click)="courseRowSelected(course)">{{ course.course }}</td>
-            <td (click)="courseRowSelected(course)">{{ course.hours }}</td>
-            <!-- <td (click)="courseRowSelected(course)" >{{ course.course }}</td> if they have applied -->
-            <td> <select></select> </td> <!-- show only IF they have applied -->
-        </tr>
-        <tr *ngIf="course.expanded == true">
-            <h2> Apply to {{ course.course }} </h2>
-            <!-- course apply section -->
-            <!-- display message if they have already applied -->
-        </tr>
-    </ng-container>
-</table>
-
+<h2 style="color: indigo; font-weight: 800;">Rank Applicants</h2>
+<label>Course: </label>
+<select id = "dropdown-course">
+<option></option>
+<option *ngFor="let obj of courseData">{{obj.course}}</option>
+</select>
+<div>
+    1. 
+    <select id = "dropdown1" (click)="updateApps()">
+    <option></option>
+    <option *ngFor="let obj of applicants">{{obj.name}}</option>
+    </select>
+</div>
+<div>
+    2. 
+    <select id = "dropdown2" (click)="updateApps()">
+    <option></option>
+    <option *ngFor="let obj of applicants">{{obj.name}}</option>
+    </select>
+</div>
+<div>
+    3. 
+    <select id = "dropdown3" (click)="updateApps()">
+    <option></option>
+    <option *ngFor="let obj of applicants">{{obj.name}}</option>
+    </select>
+</div>
+<div *ngIf="error">
+    <p style="color: red;">Duplicate Applicants!</p>
+</div>
 <button (click)="submitRankings()">Submit Rankings</button>
-<app-upload-applicant></app-upload-applicant>
-<app-upload-rankings></app-upload-rankings>

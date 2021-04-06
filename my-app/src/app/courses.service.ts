@@ -57,4 +57,8 @@ export class CoursesService {
   requires(course) {
     return this.http.post(`${environment.apiUrl}/api/getcourses`, course,  { headers: this.userService.getAuthorizationHeader() });
   }
+
+  addCourseRankings(obj) {
+    return this.http.post(`${environment.apiUrl}/api/course-rankings`, obj,  { headers: this.userService.getAuthorizationHeader() });
+  }
 }
