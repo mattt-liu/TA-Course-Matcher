@@ -1,24 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from './../environments/environment';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuestionsService {
 
-  httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  };
-
-  constructor(private http: HttpClient) { }
+  constructor(
+    private userService: UserService,
+    private http: HttpClient) { }
 
   createQuestions(data) {
-    if (environment.production) return this.http.post(`/api/courses-ml`, data);
-    return this.http.post(`${environment.apiUrl}/api/courses-ml`, data);
+    return this.http.post(`${environment.apiUrl}/api/courses-ml`, data,  { headers: this.userService.getAuthorizationHeader() });
   }
 
-  getQuestions(data){
-    return this.http.get(`${environment.apiUrl}/api/getquestions`, data);
+  getQuestions(){
+    return this.http.get(`${environment.apiUrl}/api/getquestions`,  { headers: this.userService.getAuthorizationHeader() });
   }
 }

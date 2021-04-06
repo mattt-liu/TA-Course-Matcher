@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TA } from './TAhours';
 import { environment } from '../../environments/environment';
-
+import { UserService } from '../user.service';
 
 @Injectable()
 export class TAservice {
@@ -13,16 +13,18 @@ export class TAservice {
 private getTAstring: string = `${environment.apiUrl}/api/getTAhours`;
 private postTAstring: string = `${environment.apiUrl}/api/replaceTAhours`;
 
-constructor(private http: HttpClient) { }
+constructor(
+  private userService: UserService,
+  private http: HttpClient) { }
 
 postTA(pdn) {
-return this.http.post(this.postTAstring, pdn).toPromise().then(data => {
+return this.http.post(this.postTAstring, pdn,  { headers: this.userService.getAuthorizationHeader() }).toPromise().then(data => {
   console.log(data);
 });
     }
 
 getTA(): Observable<TA[]> {
-return this.http.get<TA[]>(this.getTAstring);
+return this.http.get<TA[]>(this.getTAstring,  { headers: this.userService.getAuthorizationHeader() });
     }
 
 

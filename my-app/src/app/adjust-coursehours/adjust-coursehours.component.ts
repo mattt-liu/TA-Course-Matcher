@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { courseinteface } from './coursehours'
 import { environment } from '../../environments/environment';
+import { UserService } from '../user.service';
 
 @Injectable()
 export class courseService {
@@ -13,16 +14,18 @@ export class courseService {
 private getcourseurl: string = `${environment.apiUrl}/api/getcoursehours`;
 private postcourseurl: string = `${environment.apiUrl}/api/replacecoursehours`;
 
-constructor(private http: HttpClient) { }
+constructor(
+  private userService: UserService,
+  private http: HttpClient) { }
 
 postHours(pdn) {
-return this.http.post(this.postcourseurl, pdn).toPromise().then(data => {
+return this.http.post(this.postcourseurl, pdn,  { headers: this.userService.getAuthorizationHeader() }).toPromise().then(data => {
   console.log(data);
 });
     }
 
 getHours(): Observable<courseinteface[]> {
-return this.http.get<courseinteface[]>(this.getcourseurl);
+return this.http.get<courseinteface[]>(this.getcourseurl, { headers: this.userService.getAuthorizationHeader() });
     }
 
 

@@ -6,6 +6,7 @@ import { courses } from './needsTAs';
 import { questions } from '../course-info-and-questions/questions';
 import { applicant } from '../applicant-information/applicants';
 import { environment } from 'src/environments/environment';
+import { UserService } from '../user.service';
 
 @Injectable()
 export class ConfigService {
@@ -14,17 +15,19 @@ private linkstring: string = `${environment.apiUrl}/api/getcourses`;
 private linkstring1: string = `${environment.apiUrl}/api/getquestions`;
 private linkstring2: string = `${environment.apiUrl}/api/getapplicants`;
 
-constructor(private http: HttpClient) { }
+constructor(
+  private userService: UserService,
+  private http: HttpClient) { }
 
 getcourses(): Observable<courses[]> {
-return this.http.get<courses[]>(this.linkstring);
+return this.http.get<courses[]>(this.linkstring,  { headers: this.userService.getAuthorizationHeader() });
     }
 
 getquestions(): Observable<questions[]> {
-return this.http.get<questions[]>(this.linkstring1);
+return this.http.get<questions[]>(this.linkstring1,  { headers: this.userService.getAuthorizationHeader() });
     }
 getapplicants(): Observable<applicant[]> {
-return this.http.get<applicant[]>(this.linkstring2);
+return this.http.get<applicant[]>(this.linkstring2,  { headers: this.userService.getAuthorizationHeader() });
     }
 
 }
