@@ -30,14 +30,8 @@ app.use((req, res, next) => {
 
 // ######## routes ########
 
-router.route('/test')
-	// get all courses
-	.get((req, res) => {
-		return res.status(200).send("Hello world");
-	})
-
 router.route('/getcourses')
-	.get((req, res) => {
+	.get(auth.authenticateToken, (req, res) => {
 		return mongoConnection.then(() => {
 			return mongoClient.db(dbName).collection("courses").find().toArray().then((result) => {
 				let newResults = []
@@ -51,7 +45,7 @@ router.route('/getcourses')
 		})
 	})
 	// change if a course "requires" TA's
-	.post((req, res) => {
+	.post(auth.authenticateToken, (req, res) => {
 		// course questions
 
 		// sanitize body with schema
@@ -87,7 +81,7 @@ router.route('/getcourses')
 
 router.route('/coursehours')
 	// post course hours
-	.post((req, res) => {
+	.post(auth.authenticateToken, (req, res) => {
 		// sanitize body with schema
 		const schema = Joi.object({
 			course: Joi.string().trim().required(),
@@ -133,7 +127,7 @@ router.route('/coursehours')
 	});
 
 router.route('/courses-ml')
-	.post((req, res) => {
+	.post(auth.authenticateToken, (req, res) => {
 		// course questions
 
 		// sanitize body with schema
@@ -177,7 +171,7 @@ router.route('/courses-ml')
 	})
 
 router.route('/add-applicants')
-	.post((req, res) => {
+	.post(auth.authenticateToken, (req, res) => {
 		// add applicant answers 
 		const schema = Joi.array().items(Joi.object({
 			course: Joi.string().min(4).required(),
@@ -382,7 +376,7 @@ router.route("/users")
 	})
 
 router.route('/assign')
-	.post((req, res) => {
+	.post(auth.authenticateToken, (req, res) => {
 		// TODO: matt - change to posting rankings
 		// sanitize body with schema
 
@@ -431,7 +425,7 @@ router.route('/assign')
 	})
 
 router.route('/applicant-rankings/:name')
-	.get((req, res) => {
+	.get(auth.authenticateToken, (req, res) => {
 
 		let name = req.params.name.substr(0, 1).toUpperCase() + req.params.name.substr(1).toLowerCase(); // format name
 
@@ -506,7 +500,7 @@ router.route('/applicant-rankings/:name')
 			})
 		})
 	})
-	.post((req, res) => {
+	.post(auth.authenticateToken, (req, res) => {
 		const schema = Joi.object({
 			course: Joi.string().trim().max(64).required(),
 			hours: Joi.number().integer().min(0).required()
@@ -615,7 +609,7 @@ router.route('/applicant-rankings/:name')
 	})
 
 router.route('/instructor-rankings/:course')
-	.get((req, res) => {
+	.get(auth.authenticateToken, (req, res) => {
 
 		let course = req.params.course.toUpperCase();
 
@@ -695,7 +689,7 @@ router.route('/instructor-rankings/:course')
 			})
 		})
 	})
-	.post((req, res) => {
+	.post(auth.authenticateToken, (req, res) => {
 		const schema = Joi.object({
 			name: Joi.string().trim().max(64).required(),
 			hours: Joi.number().integer().min(0).required()
@@ -809,7 +803,7 @@ router.route('/instructor-rankings/:course')
 
 // req.body format = { course: "some-course", qualifications: "some text here" }
 router.route('/courses-insert-qualifications')
-	.post((req, res) => {
+	.post(auth.authenticateToken, (req, res) => {
 
 		// sanitize body with schema
 		const schema = Joi.object({
@@ -855,7 +849,7 @@ router.route('/courses-insert-qualifications')
 		})
 	});
 router.route('/getquestions')
-	.get((req, res) => {
+	.get(auth.authenticateToken, (req, res) => {
 		return mongoConnection.then(() => {
 
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
@@ -880,7 +874,7 @@ router.route('/getquestions')
 	});
 
 router.route('/getapplicants') //Get the applicants and their answers to each question
-	.get((req, res) => {
+	.get(auth.authenticateToken, (req, res) => {
 		return mongoConnection.then(() => {
 
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("applicant-rankings").find();
@@ -906,7 +900,7 @@ router.route('/getapplicants') //Get the applicants and their answers to each qu
 
 //post TA Hours
 router.route('/replaceTAhours')
-	.post((req, res) => {
+	.post(auth.authenticateToken, (req, res) => {
 
 		const schema = Joi.object({
 			name: Joi.string().trim().required(),
@@ -952,7 +946,7 @@ router.route('/replaceTAhours')
 //get TA Hours
 
 router.route('/getTAhours')
-	.get((req, res) => {
+	.get(auth.authenticateToken, (req, res) => {
 		return mongoConnection.then(() => {
 
 			let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("assigned").find();
@@ -977,7 +971,7 @@ router.route('/getTAhours')
 	});
 
 router.route('/course-data')
-	.post((req, res) => {
+	.post(auth.authenticateToken, (req, res) => {
 		/**
 		 * post course set up info
 		 */
@@ -1024,6 +1018,9 @@ router.route('/course-data')
 // add/modify instructors
 router.route('/instructors')
 	.get(auth.authenticateToken, (req, res) => {
+		// only admin access
+		if (!req.user) return res.status(401).json({ message: "401: Unauthorized" });
+		if (!req.user.admin) return res.status(403).json({ message: "403: Forbidden" });
 		return mongoConnection.then(() => {
 			return mongoClient.db(dbName).collection("instructor-rankings").find().toArray().then(data => {
 				return res.status(200).send(data);
@@ -1097,7 +1094,7 @@ router.route("/add-instructor")
 
 	//post course hours
 router.route('/replacecoursehours')
-.post((req, res) => {
+.post(auth.authenticateToken, (req, res) => {
 	
 	const schema = Joi.object({
 		course: Joi.string().trim().required(),
@@ -1140,7 +1137,7 @@ router.route('/replacecoursehours')
 
 //get course Hours
 router.route('/getcoursehours')
-.get((req, res) => {
+.get(auth.authenticateToken, (req, res) => {
 	return mongoConnection.then(() => {
 
 		let collection = mongoClient.db("SE3350-TA-Course-Matching").collection("courses").find();
