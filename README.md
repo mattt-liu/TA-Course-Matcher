@@ -3,7 +3,7 @@ This web app is designed for instructors and department chair to use. It allows 
 
 ## About
 The app uses the MEAN technology stack and multiple different Node packages. For more information ask the contributors for documentation.
- - MongoDB - to store our non-relational data allowed for easy accessing and inserting of data.
+ - MongoDB - to store our non-relational data and allowed for easy accessing and inserting of data.
  - Express.js - to create the back-end API for different endpoints.
  - Angular - to create our UI and front-end site.
  - Node.js - to run the environment for our Express.js API server.
