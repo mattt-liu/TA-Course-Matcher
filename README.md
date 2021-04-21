@@ -1,8 +1,8 @@
 # TA-Course Matching App
-This web app is designed for instructors and department chair to use. It allows for a seamless TA application process that requires no interaction from the applicants. The app allows for file uploads that will automatically parse the data and produce a recommended applicant for each course.
+This web app is a platform designed to be used by faculty members. It allows for a seamless TA application process that requires no interaction from the applicants. The app allows for file uploads that will automatically parse the data and produce a recommended applicant for each course.
 
 ## About
-The app uses the MEAN technology stack and multiple different Node packages. For more information ask the contributors for documentation.
+The app uses the MEAN tech stack and multiple different Node packages. For more information ask the contributors for documentation.
  - MongoDB - to store our non-relational data and allowed for easy accessing and inserting of data.
  - Express.js - to create the back-end API for different endpoints.
  - Angular - to create our UI and front-end site.
